@@ -4,17 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🎓 CIA Triad - Exam Portal Sandbox</title>
-    
-    <!-- Sinhala Font Import -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+Sinhala:wght@400;500;600;700&display=swap" rel="stylesheet">
-
     <style>
-        /* =========================================
-           🎓 CIA Triad Exam Portal - Complete CSS
-           ========================================= */
-        
         :root {
             --bg-primary: #0a0e1a;
             --bg-secondary: #111827;
@@ -31,129 +22,59 @@
             --text-secondary: #94a3b8;
             --text-muted: #64748b;
             --border-color: #2a3550;
-            --radius-sm: 8px;
             --radius-md: 12px;
             --radius-lg: 16px;
             --radius-xl: 20px;
-            --shadow-lg: 0 8px 24px rgba(0,0,0,0.4);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Inter', 'Noto Sans Sinhala', 'Iskoola Pota', system-ui, -apple-system, sans-serif;
+            font-family: 'Inter', 'Noto Sans Sinhala', system-ui, sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
             min-height: 100vh;
             line-height: 1.6;
             overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
         }
 
-        /* Background Animation */
-        .bg-animation {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: 0;
-            overflow: hidden;
-            pointer-events: none;
-        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; position: relative; z-index: 1; }
 
-        .bg-animation .cia-triad {
-            position: absolute;
-            width: 120px; height: 120px;
-            border: 2px solid rgba(139, 92, 246, 0.2);
-            border-radius: 50%;
-            animation: rotateTriad 20s linear infinite;
-            opacity: 0.1;
-        }
-
-        @keyframes rotateTriad {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        .container {
-            position: relative;
-            z-index: 1;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        /* Header */
-        .header {
-            text-align: center;
-            padding: 40px 20px;
-            margin-bottom: 30px;
-        }
-
+        .header { text-align: center; padding: 40px 20px; margin-bottom: 30px; }
         .header .icon { font-size: 64px; display: inline-block; animation: float 3s ease-in-out infinite; }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-
         .header h1 {
-            font-size: 2.5rem;
-            font-weight: 900;
+            font-size: 2.5rem; font-weight: 900;
             background: linear-gradient(135deg, var(--conf-blue), var(--integ-purple), var(--avail-green));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             margin: 15px 0 10px;
         }
-
         .header .subtitle { color: var(--text-secondary); font-size: 1.1rem; max-width: 700px; margin: 0 auto; }
         .header .subtitle span { color: var(--integ-purple); font-weight: 700; }
 
-        /* CIA Triad Visual */
-        .cia-visual {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin: 30px 0;
-            flex-wrap: wrap;
-        }
-
+        .cia-visual { display: flex; justify-content: center; gap: 20px; margin: 30px 0; flex-wrap: wrap; }
         .cia-pillar {
-            background: var(--bg-card);
-            border: 2px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            padding: 20px;
-            width: 180px;
-            text-align: center;
-            transition: all 0.3s ease;
-            cursor: pointer;
+            background: var(--bg-card); border: 2px solid var(--border-color);
+            border-radius: var(--radius-lg); padding: 20px; width: 180px;
+            text-align: center; transition: all 0.3s ease; cursor: pointer;
         }
-        
         .cia-pillar:hover { transform: translateY(-5px); border-color: var(--accent-cyan); }
         .cia-pillar.conf { border-top: 4px solid var(--conf-blue); }
         .cia-pillar.integ { border-top: 4px solid var(--integ-purple); }
         .cia-pillar.avail { border-top: 4px solid var(--avail-green); }
-        
         .cia-pillar .emoji { font-size: 2.5rem; margin-bottom: 10px; display: block; }
         .cia-pillar h3 { font-size: 1rem; font-weight: 800; margin-bottom: 6px; }
         .cia-pillar p { font-size: 0.8rem; color: var(--text-muted); }
 
-        /* Portal Container */
         .portal-container {
-            background: var(--bg-card);
-            border: 2px solid var(--border-color);
-            border-radius: var(--radius-xl);
-            overflow: hidden;
-            margin: 20px 0;
-            box-shadow: var(--shadow-lg);
+            background: var(--bg-card); border: 2px solid var(--border-color);
+            border-radius: var(--radius-xl); overflow: hidden; margin: 20px 0;
         }
-
         .portal-header {
             background: linear-gradient(135deg, var(--bg-secondary), var(--bg-card));
-            padding: 16px 24px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            padding: 16px 24px; display: flex; align-items: center; justify-content: space-between;
             border-bottom: 1px solid var(--border-color);
         }
-
         .portal-logo { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 1.1rem; }
         .portal-logo .badge { background: var(--accent-cyan); color: #0a0e1a; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; }
         .portal-user { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; }
@@ -162,38 +83,25 @@
             background: linear-gradient(135deg, var(--conf-blue), var(--integ-purple));
             display: flex; align-items: center; justify-content: center; font-weight: 700; color: white;
         }
-
         .portal-body { padding: 24px; }
 
-        /* Login Screen */
         .login-screen { text-align: center; padding: 40px 20px; }
         .login-screen h3 { font-size: 1.3rem; margin-bottom: 8px; }
         .login-screen p { color: var(--text-secondary); margin-bottom: 24px; }
-
         .role-select { display: flex; gap: 12px; justify-content: center; margin-bottom: 24px; flex-wrap: wrap; }
-        
         .role-btn {
-            padding: 12px 24px;
-            background: var(--bg-secondary);
-            border: 2px solid var(--border-color);
-            border-radius: var(--radius-md);
-            color: var(--text-primary);
-            font-family: inherit;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            padding: 12px 24px; background: var(--bg-secondary); border: 2px solid var(--border-color);
+            border-radius: var(--radius-md); color: var(--text-primary); font-family: inherit;
+            font-weight: 600; cursor: pointer; transition: all 0.3s ease;
             display: flex; align-items: center; gap: 8px;
         }
-
         .role-btn:hover, .role-btn.active { border-color: var(--accent-cyan); background: var(--bg-card-hover); }
         .role-btn.student.active { border-color: var(--conf-blue); }
         .role-btn.admin.active { border-color: var(--integ-purple); }
         .role-btn.attacker.active { border-color: var(--accent-red); }
 
-        /* Form Inputs */
         .input-group { margin-bottom: 16px; text-align: left; max-width: 320px; margin-left: auto; margin-right: auto; }
         .input-group label { display: block; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 6px; }
-        
         .input-group input {
             width: 100%; padding: 12px 16px; background: var(--bg-secondary);
             border: 2px solid var(--border-color); border-radius: var(--radius-md);
@@ -202,7 +110,6 @@
         }
         .input-group input:focus { border-color: var(--accent-cyan); box-shadow: 0 0 15px rgba(6,182,212,0.2); }
 
-        /* Buttons */
         .btn {
             padding: 12px 28px; border: none; border-radius: var(--radius-md);
             font-family: inherit; font-size: 0.95rem; font-weight: 700;
@@ -214,18 +121,17 @@
         .btn-primary:hover { box-shadow: 0 6px 25px rgba(59,130,246,0.4); transform: translateY(-2px); }
         .btn-danger { background: linear-gradient(135deg, var(--accent-red), var(--accent-orange)); color: white; }
         .btn-success { background: linear-gradient(135deg, var(--avail-green), var(--accent-cyan)); color: white; }
+        .btn-warning { background: linear-gradient(135deg, var(--accent-yellow), var(--accent-orange)); color: #1a1a2e; }
         .btn-group { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 16px; }
 
-        /* Dashboard */
-        .dashboard { display: none; }
-        .dashboard.active { display: block; animation: fadeInUp 0.5s ease; }
+        .dashboard { display: none; animation: fadeInUp 0.5s ease; }
+        .dashboard.active { display: block; }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border-color); }
+        .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border-color); flex-wrap: wrap; gap: 12px; }
         .dashboard-title h2 { font-size: 1.3rem; font-weight: 800; }
         .dashboard-title p { color: var(--text-secondary); font-size: 0.9rem; }
 
-        /* Tables */
         .marks-table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 20px 0; background: var(--bg-secondary); border-radius: var(--radius-md); overflow: hidden; }
         .marks-table th, .marks-table td { padding: 14px 16px; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 0.9rem; }
         .marks-table th { background: var(--bg-card); font-weight: 700; color: var(--text-secondary); text-transform: uppercase; font-size: 0.75rem; }
@@ -236,114 +142,34 @@
         .grade.c { background: rgba(245,158,11,0.15); color: var(--accent-yellow); }
         .grade.f { background: rgba(239,68,68,0.15); color: var(--accent-red); }
 
-        /* =========================================
-           ️ INTEGRITY PANEL - FIXED & POLISHED
-           ========================================= */
-        .integrity-panel {
-            background: var(--bg-secondary);
-            border: 2px solid var(--border-color);
-            border-radius: var(--radius-md);
-            padding: 24px;
-            margin: 20px 0;
+        .integrity-panel { background: var(--bg-secondary); border: 2px solid var(--border-color); border-radius: var(--radius-md); padding: 24px; margin: 20px 0; }
+        .integrity-panel h4 { font-size: 1rem; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; color: var(--text-primary); font-weight: 700; }
+        .integrity-controls { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; align-items: stretch; }
+        .integrity-controls select, .integrity-controls input {
+            padding: 12px 16px; background: var(--bg-primary); border: 2px solid var(--border-color);
+            border-radius: var(--radius-md); color: var(--text-primary);
+            font-family: inherit; font-size: 0.95rem; outline: none;
+            transition: all 0.3s ease; min-height: 48px; flex: 1; min-width: 160px;
         }
-
-        .integrity-panel h4 {
-            font-size: 1rem; margin-bottom: 16px; display: flex; align-items: center; gap: 10px;
-            color: var(--text-primary); font-weight: 700;
+        .integrity-controls select:focus, .integrity-controls input:focus {
+            border-color: var(--integ-purple); box-shadow: 0 0 15px rgba(139,92,246,0.2);
         }
-
-        .integrity-controls {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-top: 16px;
-            align-items: stretch; /* Ensures all items stretch to same height */
-        }
-
-        .integrity-controls select,
-        .integrity-controls input {
-            padding: 12px 16px;
-            background: var(--bg-primary);
-            border: 2px solid var(--border-color);
-            border-radius: var(--radius-md);
-            color: var(--text-primary);
-            font-family: 'Inter', 'Noto Sans Sinhala', sans-serif; /* Sinhala Support */
-            font-size: 0.95rem;
-            outline: none;
-            transition: all 0.3s ease;
-            min-height: 48px;
-            flex: 1; /* Take equal space */
-            min-width: 160px;
-        }
-
-        .integrity-controls select:focus,
-        .integrity-controls input:focus {
-            border-color: var(--integ-purple);
-            box-shadow: 0 0 15px rgba(139,92,246,0.2);
-        }
-
-        /* Custom Dropdown Arrow */
         .integrity-controls select {
             appearance: none;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 14px center;
-            padding-right: 40px;
-            cursor: pointer;
+            background-repeat: no-repeat; background-position: right 14px center;
+            padding-right: 40px; cursor: pointer;
         }
-
-        /* Number Input Tweaks */
-        .integrity-controls input[type="number"] {
-            width: 140px;
-            flex: none; /* Fixed width for number input */
-            -moz-appearance: textfield;
-        }
+        .integrity-controls input[type="number"] { width: 140px; flex: none; -moz-appearance: textfield; }
         .integrity-controls input[type="number"]::-webkit-outer-spin-button,
-        .integrity-controls input[type="number"]::-webkit-inner-spin-button {
-            -webkit-appearance: none; margin: 0;
-        }
+        .integrity-controls input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .integrity-controls .btn { padding: 12px 20px; font-size: 0.85rem; white-space: nowrap; flex: 1; min-width: 180px; }
 
-        .integrity-controls .btn {
-            padding: 12px 20px; font-size: 0.85rem; white-space: nowrap; flex: 1; min-width: 180px;
-        }
-
-        /* Status Message */
-        .integrity-status {
-            margin-top: 16px; padding: 16px; border-radius: var(--radius-md);
-            font-size: 0.9rem; font-weight: 600; line-height: 1.6;
-        }
+        .integrity-status { margin-top: 16px; padding: 16px; border-radius: var(--radius-md); font-size: 0.9rem; font-weight: 600; line-height: 1.6; }
         .integrity-status.verified { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); color: var(--avail-green); }
         .integrity-status.tampered { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: var(--accent-red); animation: shake 0.5s ease; }
-
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
 
-        /* Load Test Section */
-        .load-test { background: var(--bg-secondary); border: 2px solid var(--border-color); border-radius: var(--radius-md); padding: 24px; margin: 20px 0; }
-        .load-test h4 { font-size: 1rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-        
-        .load-controls { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
-        .load-controls label { font-size: 0.85rem; color: var(--text-secondary); }
-        
-        .load-controls input[type="range"] { flex: 1; min-width: 200px; -webkit-appearance: none; height: 6px; background: var(--border-color); border-radius: 3px; outline: none; }
-        .load-controls input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; background: linear-gradient(135deg, var(--avail-green), var(--accent-cyan)); border-radius: 50%; cursor: pointer; }
-        
-        .load-value { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--avail-green); min-width: 60px; text-align: center; }
-
-        .server-status { display: flex; align-items: center; gap: 20px; margin-top: 16px; flex-wrap: wrap; }
-        .server-indicator { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; }
-        .server-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--avail-green); animation: pulse 2s infinite; }
-        .server-dot.warning { background: var(--accent-yellow); }
-        .server-dot.critical { background: var(--accent-red); animation: blink 0.5s infinite; }
-        .server-dot.down { background: var(--text-muted); animation: none; }
-
-        @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.7; transform: scale(0.9); } }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-        
-        .response-time { font-family: 'JetBrains Mono', monospace; font-weight: 700; }
-        .response-time.good { color: var(--avail-green); }
-        .response-time.critical { color: var(--accent-red); }
-
-        /* User List Grid */
         .user-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin: 20px 0; }
         .user-card { background: var(--bg-secondary); border: 2px solid var(--border-color); border-radius: var(--radius-md); padding: 16px; text-align: center; transition: all 0.3s ease; cursor: pointer; }
         .user-card:hover { border-color: var(--conf-blue); transform: translateY(-3px); }
@@ -354,13 +180,33 @@
         .user-card.own .marks-visible { display: block; margin-top: 8px; font-weight: 700; color: var(--avail-green); }
         .user-card .marks-visible { display: none; }
 
-        /* Scenario Box */
+        .load-test { background: var(--bg-secondary); border: 2px solid var(--border-color); border-radius: var(--radius-md); padding: 24px; margin: 20px 0; }
+        .load-test h4 { font-size: 1rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .load-controls { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+        .load-controls label { font-size: 0.85rem; color: var(--text-secondary); }
+        .load-controls input[type="range"] { flex: 1; min-width: 200px; -webkit-appearance: none; height: 6px; background: var(--border-color); border-radius: 3px; outline: none; }
+        .load-controls input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; background: linear-gradient(135deg, var(--avail-green), var(--accent-cyan)); border-radius: 50%; cursor: pointer; }
+        .load-value { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--avail-green); min-width: 60px; text-align: center; }
+        .server-status { display: flex; align-items: center; gap: 20px; margin-top: 16px; flex-wrap: wrap; }
+        .server-indicator { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; }
+        .server-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--avail-green); animation: pulse 2s infinite; }
+        .server-dot.warning { background: var(--accent-yellow); }
+        .server-dot.critical { background: var(--accent-red); animation: blink 0.5s infinite; }
+        .server-dot.down { background: var(--text-muted); animation: none; }
+        @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.7; transform: scale(0.9); } }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        .response-time { font-family: 'JetBrains Mono', monospace; font-weight: 700; }
+        .response-time.good { color: var(--avail-green); }
+        .response-time.critical { color: var(--accent-red); }
+
         .scenario-box { background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(59,130,246,0.05)); border: 1px solid rgba(139,92,246,0.2); border-radius: var(--radius-md); padding: 20px; margin: 20px 0; }
         .scenario-box h4 { color: var(--integ-purple); font-size: 0.95rem; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
         .scenario-box p { color: var(--text-secondary); font-size: 0.85rem; line-height: 1.6; }
         .scenario-box.cia-breakdown { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top: 16px; }
         .cia-item { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 16px; border-left: 3px solid; }
-        .cia-item.conf { border-color: var(--conf-blue); } .cia-item.integ { border-color: var(--integ-purple); } .cia-item.avail { border-color: var(--avail-green); }
+        .cia-item.conf { border-color: var(--conf-blue); }
+        .cia-item.integ { border-color: var(--integ-purple); }
+        .cia-item.avail { border-color: var(--avail-green); }
         .cia-item h5 { font-size: 0.9rem; font-weight: 700; margin-bottom: 6px; }
         .cia-item p { font-size: 0.8rem; color: var(--text-muted); margin: 0; }
 
@@ -373,7 +219,6 @@
 
         .hidden { display: none !important; }
 
-        /* Responsive */
         @media (max-width: 768px) {
             .header h1 { font-size: 1.8rem; }
             .cia-pillar { width: 140px; padding: 16px; }
@@ -385,245 +230,128 @@
     </style>
 </head>
 <body>
-    <!-- Background Animation -->
-    <div class="bg-animation">
-        <div class="cia-triad" style="top: 10%; left: 10%;"></div>
-        <div class="cia-triad" style="top: 60%; right: 15%; animation-delay: -7s;"></div>
-        <div class="cia-triad" style="bottom: 10%; left: 40%; animation-delay: -14s;"></div>
-    </div>
-
     <div class="container">
-        <!-- Header -->
         <div class="header">
             <div class="icon">🎓</div>
             <h1>CIA Triad - Exam Portal</h1>
-            <p class="subtitle">
-                <span>ප්‍රායෝගික උදාහරණයක්</span> මගින් Confidentiality, Integrity, Availability තේරුම් ගන්න.<br>
-                විභාග පද්ධතියක ආරක්ෂාව සැලසුම් කරමු!
-            </p>
+            <p class="subtitle"><span>ප්‍රායෝගික උදාහරණයක්</span> මගින් Confidentiality, Integrity, Availability තේරුම් ගන්න.</p>
         </div>
 
-        <!-- CIA Triad Visual -->
         <div class="cia-visual">
-            <div class="cia-pillar conf">
-                <span class="emoji">🔒</span>
-                <h3>Confidentiality</h3>
-                <p>රහස්‍යාවය - සිසුන්ට තමන්ගේ ලකුණු පමණක් බැලීම</p>
-            </div>
-            <div class="cia-pillar integ">
-                <span class="emoji">🛡️</span>
-                <h3>Integrity</h3>
-                <p>අඛණ්ඩතාවය - ලකුණු වෙනස් කිරීම වැළැක්වීම</p>
-            </div>
-            <div class="cia-pillar avail">
-                <span class="emoji">⚡</span>
-                <h3>Availability</h3>
-                <p>පවතින බව - දහස් ගණන් සිසුන්ට එකවර ප්‍රවේශය</p>
-            </div>
+            <div class="cia-pillar conf"><span class="emoji">🔒</span><h3>Confidentiality</h3><p>රහස්‍යභාවය</p></div>
+            <div class="cia-pillar integ"><span class="emoji">🛡️</span><h3>Integrity</h3><p>අඛණ්ඩතාවය</p></div>
+            <div class="cia-pillar avail"><span class="emoji">⚡</span><h3>Availability</h3><p>පවතින බව</p></div>
         </div>
 
-        <!-- Exam Portal Simulation -->
         <div class="portal-container">
             <div class="portal-header">
-                <div class="portal-logo">
-                    <span>🎓</span> University Exam Portal <span class="badge">SECURE</span>
-                </div>
-                <div class="portal-user" id="portalUser">
-                    <span> Guest</span>
-                </div>
+                <div class="portal-logo"><span>🎓</span> University Exam Portal <span class="badge">SECURE</span></div>
+                <div class="portal-user" id="portalUser"><span>👤 Guest</span></div>
             </div>
 
             <div class="portal-body">
-                <!-- Login Screen -->
                 <div class="login-screen" id="loginScreen">
                     <h3>🔐 පද්ධතියට ප්‍රවේශ වන්න</h3>
-                    <p>ඔබේ භූමිකාව තෝරා ගන්න සහ පරීක්ණ ආරම්භ කරන්න</p>
-
+                    <p>ඔබේ ූමිකාව තෝරා ගන්න</p>
                     <div class="role-select">
-                        <button class="role-btn student active" onclick="selectRole('student')">
-                            👨🎓 සිසුවෙක් (Student)
-                        </button>
-                        <button class="role-btn admin" onclick="selectRole('admin')">
-                            👨‍💼 පරිපාලක (Admin)
-                        </button>
-                        <button class="role-btn attacker" onclick="selectRole('attacker')">
-                            🕵️ හැකර් (Attacker)
-                        </button>
+                        <button class="role-btn student active" onclick="selectRole('student')">👨‍🎓 සිසුවෙක්</button>
+                        <button class="role-btn admin" onclick="selectRole('admin')">👨‍💼 පරිපාලක</button>
+                        <button class="role-btn attacker" onclick="selectRole('attacker')">🕵️ හැකර්</button>
                     </div>
-
-                    <div class="input-group">
-                        <label>🆔 පරිශීලක නාමය</label>
-                        <input type="text" id="username" placeholder="උදා: student001" value="student001">
-                    </div>
-
-                    <div class="input-group">
-                        <label>🔑 මුරපදය</label>
-                        <input type="password" id="password" placeholder="••••••••" value="pass123">
-                    </div>
-
-                    <button class="btn btn-primary" onclick="login()">🔓 පද්ධතියට ඇතුළු වන්න</button>
+                    <div class="input-group"><label>🆔 පරිශීලක නාමය</label><input type="text" id="username" value="student001"></div>
+                    <div class="input-group"><label>🔑 මුරපදය</label><input type="password" id="password" value="pass123"></div>
+                    <button class="btn btn-primary" onclick="login()">🔓 ඇතුළු වන්න</button>
                     <div id="loginStatus"></div>
                 </div>
 
-                <!-- Student Dashboard -->
                 <div class="dashboard" id="studentDashboard">
                     <div class="dashboard-header">
-                        <div class="dashboard-title">
-                            <h2>📋 මගේ විභාග ප්‍රතිඵල</h2>
-                            <p>පරිශීලක: <span id="studentName">Nimal Perera</span> | ID: <span id="studentId">STU001</span></p>
-                        </div>
+                        <div class="dashboard-title"><h2>📋 මගේ විභාග ප්‍රතිඵල</h2><p>පරිශීලක: <span id="studentName">Nimal Perera</span></p></div>
                         <button class="btn btn-danger" onclick="logout()">🚪 Logout</button>
                     </div>
 
-                    <!-- Confidentiality Demo: User List -->
                     <div class="scenario-box">
-                        <h4> Confidentiality Demo: අනෙක් සිසුන්ගේ ලකුණු?</h4>
-                        <p>පහත සිසුන්ගේ ලකුණු බැලීමට උත්සාහ කරන්න. බට පෙනෙන්නේ ඔබේ ලකුණු පමණක් බව සොයා බලන්න!</p>
+                        <h4>🔒 Confidentiality Demo</h4>
+                        <p>අනෙක් සිසුන්ගේ ලකුණු බැලීමට උත්සාහ කරන්න</p>
                         <div class="user-list" id="userList"></div>
                     </div>
 
-                    <!-- My Marks Table -->
-                    <h4 style="margin: 20px 0 12px;"> මගේ ලකුණු විස්තර</h4>
-                    <table class="marks-table">
-                        <thead>
-                            <tr><th>විෂය</th><th>ලකුණු</th><th>ශ්‍රේණිය</th><th>Hash (Integrity)</th></tr>
-                        </thead>
-                        <tbody id="myMarksBody"></tbody>
-                    </table>
+                    <h4 style="margin: 20px 0 12px;">📊 මගේ ලකුණු</h4>
+                    <table class="marks-table"><thead><tr><th>විෂය</th><th>ලකුණු</th><th>ශ්‍රේණිය</th><th>Hash</th></tr></thead><tbody id="myMarksBody"></tbody></table>
 
-                    <!-- Integrity Demo -->
                     <div class="integrity-panel">
-                        <h4>🛡️ Integrity Check: ලකුණු වෙනස් කිරීමට උත්සාහ කරන්න</h4>
-                        <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 16px;">
-                            පහත උත්සාහ කර බලන්න: ලකුණු වෙනස් කර "Verify" ඔබන්න. Hash mismatch එක නිසා වෙනස් කිරීම වහාම හඳුනාගනු ඇත!
-                        </p>
-                        
+                        <h4>🛡️ Integrity Check</h4>
+                        <p>ලකුණු වෙනස් කිරීමට උත්සාහ කරන්න</p>
                         <div class="integrity-controls">
                             <select id="subjectSelect">
                                 <option value="Mathematics">Mathematics</option>
                                 <option value="Science">Science</option>
                                 <option value="English">English</option>
                             </select>
-                            <input type="number" id="newMarks" placeholder="නව ලකුණු (0-100)" min="0" max="100">
-                            <button class="btn btn-danger" onclick="tryTamper()">✏️ ලකුණු වෙනස් කරන්න</button>
-                            <button class="btn btn-success" onclick="verifyIntegrity()">✅ Verify Integrity</button>
+                            <input type="number" id="newMarks" placeholder="නව ලකුණු" min="0" max="100">
+                            <button class="btn btn-danger" onclick="tryTamper()">✏️ වෙනස් කරන්න</button>
+                            <button class="btn btn-success" onclick="verifyIntegrity()">✅ Verify</button>
                         </div>
-                        
-                        <div class="integrity-status verified" id="integrityStatus">
-                            ✅ සියලුම ලකුණු අඛණ්ඩයි - කිසිදු වෙනසක් සිදු වී නැත
-                        </div>
+                        <div class="integrity-status verified" id="integrityStatus">✅ සියලුම ලකුණු අඛණ්ඩයි</div>
                     </div>
                 </div>
 
-                <!-- Admin Dashboard -->
                 <div class="dashboard" id="adminDashboard">
                     <div class="dashboard-header">
-                        <div class="dashboard-title">
-                            <h2>👨‍💼 පරිපාලක පාලන කවුළුව</h2>
-                            <p>සියලුම සිසුන්ගේ ලකුණු කළමනාකරණය කරන්න</p>
-                        </div>
+                        <div class="dashboard-title"><h2>👨‍ පරිපාලක පාලනය</h2></div>
                         <button class="btn btn-danger" onclick="logout()">🚪 Logout</button>
                     </div>
+                    <h4 style="margin: 20px 0 12px;">📚 සියලුම සිසුන්</h4>
+                    <table class="marks-table"><thead><tr><th>සිසු</th><th>Math</th><th>Science</th><th>English</th></tr></thead><tbody id="allMarksBody"></tbody></table>
 
-                    <h4 style="margin: 20px 0 12px;">📚 සියලුම සිසුන්ගේ ප්‍රතිඵල</h4>
-                    <table class="marks-table">
-                        <thead>
-                            <tr><th>සිසු</th><th>Mathematics</th><th>Science</th><th>English</th><th>Hash</th></tr>
-                        </thead>
-                        <tbody id="allMarksBody"></tbody>
-                    </table>
-
-                    <!-- Availability Demo: Load Test -->
                     <div class="load-test">
-                        <h4>⚡ Availability Demo: Load Testing</h4>
-                        <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 12px;">
-                            පරිශීලකයින්ගේ සංඛ්‍යාව වැඩි කර පද්ධතියේ ප්‍රතිචාර කාලය බලන්න. Redundancy සක්‍රීය කරන්න!
-                        </p>
-                        
+                        <h4>⚡ Availability Demo</h4>
                         <div class="load-controls">
-                            <label>👥 සමකාලීන පරිශීලකයින්:</label>
+                            <label>👥 පරිශීලකයින්:</label>
                             <input type="range" id="userLoad" min="1" max="10000" value="100" oninput="updateLoad()">
                             <span class="load-value" id="loadValue">100</span>
                         </div>
-                        
                         <div class="btn-group">
-                            <button class="btn btn-warning" onclick="simulateSpike()">📈 Traffic Spike Simulate</button>
-                            <button class="btn btn-success" id="redundancyBtn" onclick="toggleRedundancy()">🔄 Enable Redundancy</button>
+                            <button class="btn btn-warning" onclick="simulateSpike()">📈 Traffic Spike</button>
+                            <button class="btn btn-success" id="redundancyBtn" onclick="toggleRedundancy()">🔄 Redundancy</button>
                         </div>
-                        
                         <div class="server-status">
-                            <div class="server-indicator">
-                                <div class="server-dot" id="serverDot"></div>
-                                <span id="serverStatus">Server: Healthy</span>
-                            </div>
-                            <div class="server-indicator">
-                                <span>Response Time:</span>
-                                <span class="response-time good" id="responseTime">45ms</span>
-                            </div>
-                            <div class="server-indicator">
-                                <span>Uptime:</span>
-                                <span id="uptime">99.99%</span>
-                            </div>
+                            <div class="server-indicator"><div class="server-dot" id="serverDot"></div><span id="serverStatus">Healthy</span></div>
+                            <div class="server-indicator"><span>Response:</span><span class="response-time good" id="responseTime">45ms</span></div>
                         </div>
                         <div id="loadStatus"></div>
                     </div>
                 </div>
 
-                <!-- Attacker View -->
                 <div class="dashboard" id="attackerDashboard">
                     <div class="dashboard-header">
-                        <div class="dashboard-title">
-                            <h2>🕵️ Attacker Mode (Simulation)</h2>
-                            <p>ආරක්ෂක පියවර බිඳ දැමීමට උත්සාහ කරන්න...</p>
-                        </div>
+                        <div class="dashboard-title"><h2>🕵️ Attacker Mode</h2></div>
                         <button class="btn btn-danger" onclick="logout()">🚪 Logout</button>
                     </div>
-
                     <div class="scenario-box">
-                        <h4>⚠️ බ හැකර් කෙනෙක් ලෙස පහත උත්සාහ කරන්න:</h4>
+                        <h4>⚠️ ආරක්ෂක පියවර පරීක්ෂා කරන්න</h4>
                         <div class="cia-breakdown">
-                            <div class="cia-item conf"><h5>🔒 Confidentiality Attack</h5><p>අනෙක් සිසුන්ගේ ලකුණු බැලීමට උත්සාහ කරන්න</p></div>
-                            <div class="cia-item integ"><h5>🛡️ Integrity Attack</h5><p>ලකුණු වෙනස් කර Hash verification මඟහරින්න</p></div>
-                            <div class="cia-item avail"><h5>⚡ Availability Attack</h5><p>DDoS attack එකක් මගින් පද්ධතිය crash කරන්න</p></div>
+                            <div class="cia-item conf"><h5>🔒 Confidentiality</h5><p>අනෙක් සිසුන්ගේ ලකුණු බැලීම</p></div>
+                            <div class="cia-item integ"><h5>🛡️ Integrity</h5><p>ලකුණු වෙනස් කිරීම</p></div>
+                            <div class="cia-item avail"><h5>⚡ Availability</h5><p>DDoS Attack</p></div>
                         </div>
                     </div>
-
                     <div class="btn-group">
-                        <button class="btn btn-danger" onclick="attackConfidentiality()">🔓 Try View Others' Marks</button>
-                        <button class="btn btn-danger" onclick="attackIntegrity()">✏️ Try Tamper Marks</button>
-                        <button class="btn btn-danger" onclick="attackAvailability()">💥 Launch DDoS Attack</button>
+                        <button class="btn btn-danger" onclick="attackConfidentiality()">🔓 View Others</button>
+                        <button class="btn btn-danger" onclick="attackIntegrity()">✏️ Tamper Marks</button>
+                        <button class="btn btn-danger" onclick="attackAvailability()">💥 DDoS</button>
                     </div>
                     <div id="attackResult"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- CIA Summary -->
-        <div class="scenario-box">
-            <h4>🎯 CIA Triad සාරාංශය - Exam Portal</h4>
-            <div class="cia-breakdown">
-                <div class="cia-item conf">
-                    <h5>🔒 Confidentiality</h5>
-                    <p>• Role-based access control<br>• සිසුන්ට තමන්ගේ ලකුණු පමණක් පෙනේ<br>• Encryption මගින් දත්ත ආරක්ෂා කිරීම</p>
-                </div>
-                <div class="cia-item integ">
-                    <h5>🛡️ Integrity</h5>
-                    <p>• Hash verification සෑම ලකුණක් සඳහාම<br>• Digital signatures මගින් වෙනස් කිරීම් හුනාගැනීම<br>• Audit logs සටහන් කිරීම</p>
-                </div>
-                <div class="cia-item avail">
-                    <h5>⚡ Availability</h5>
-                    <p>• Load balancing සහ redundancy<br>• DDoS protection සක්‍රීය කිරීම<br>• Auto-scaling සහ backup servers</p>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // ==================== DATA ====================
         const students = [
             { id: 'STU001', name: 'Nimal Perera', marks: { Mathematics: 85, Science: 78, English: 92 } },
             { id: 'STU002', name: 'Kamal Silva', marks: { Mathematics: 67, Science: 88, English: 71 } },
-            { id: 'STU003', name: 'Sunietha Fernando', marks: { Mathematics: 91, Science: 85, English: 88 } },
+            { id: 'STU003', name: 'Sunetha Fernando', marks: { Mathematics: 91, Science: 85, English: 88 } },
             { id: 'STU004', name: 'Amaya Wickram', marks: { Mathematics: 72, Science: 69, English: 95 } },
             { id: 'STU005', name: 'Dinesh Kumar', marks: { Mathematics: 55, Science: 77, English: 63 } }
         ];
@@ -633,14 +361,24 @@
         let originalHashes = {};
         let redundancyEnabled = false;
 
-        // ==================== HASH FUNCTION ====================
+        // ========== FIXED HASH FUNCTION ==========
         function simpleHash(str) {
-            let hash = 0;
+            if (!str || str.length === 0) return 'sha256:error_empty';
+            
+            let hash = 5381;
             for (let i = 0; i < str.length; i++) {
-                hash = ((hash << 5) - hash) + str.charCodeAt(i);
-                hash = hash & hash;
+                const char = str.charCodeAt(i);
+                hash = ((hash << 5) + hash) + char;
+                hash = hash & 0xFFFFFFFF;
             }
-            return 'sha256:' + Math.abs(hash).toString(16).padStart(64, '0').slice(0, 40);
+            
+            const absHash = Math.abs(hash);
+            let hex = absHash.toString(16);
+            while (hex.length < 40) {
+                hex = hex + ((absHash + hex.length) % 16).toString(16);
+            }
+            
+            return 'sha256:' + hex.substring(0, 40);
         }
 
         function generateGrade(marks) {
@@ -650,7 +388,6 @@
             return { grade: 'F', class: 'f' };
         }
 
-        // ==================== LOGIN SYSTEM ====================
         function selectRole(role) {
             currentRole = role;
             document.querySelectorAll('.role-btn').forEach(btn => btn.classList.remove('active'));
@@ -665,30 +402,24 @@
         function login() {
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
-            const status = document.getElementById('loginStatus');
-
+            
             if (!username || !password) {
-                status.innerHTML = `<div class="status-banner error">⚠️ පරිශීලක නාමය සහ මුරපදය ඇතුළත් කරන්න!</div>`;
+                document.getElementById('loginStatus').innerHTML = '<div class="status-banner error">⚠️ විස්තර ඇතුළත් කරන්න!</div>';
                 return;
             }
 
             currentUser = username;
-            document.getElementById('portalUser').innerHTML = `<div class="avatar">${username[0].toUpperCase()}</div><span>${username}</span> • ${currentRole === 'student' ? '👨‍🎓' : currentRole === 'admin' ? '👨‍💼' : '️'}`;
+            document.getElementById('portalUser').innerHTML = `<div class="avatar">${username[0].toUpperCase()}</div><span>${username}</span>`;
             document.getElementById('loginScreen').style.display = 'none';
 
             if (currentRole === 'student') {
                 document.getElementById('studentDashboard').classList.add('active');
-                document.getElementById('studentName').textContent = students[0].name;
-                document.getElementById('studentId').textContent = students[0].id;
                 loadStudentData();
-                status.innerHTML = `<div class="status-banner success">✅ සාදරයෙන් පිළිගනිමු, ${username}!</div>`;
             } else if (currentRole === 'admin') {
                 document.getElementById('adminDashboard').classList.add('active');
                 loadAdminData();
-                status.innerHTML = `<div class="status-banner success">✅ පරිපාලක ප්‍රවේශය සක්‍රීයයි!</div>`;
             } else {
                 document.getElementById('attackerDashboard').classList.add('active');
-                status.innerHTML = `<div class="status-banner warning">⚠️ Attacker Mode: ආරක්ෂක පියවර පරීක්ෂා කරන්න!</div>`;
             }
 
             generateOriginalHashes();
@@ -696,48 +427,49 @@
 
         function logout() {
             currentUser = null;
-            document.getElementById('portalUser').innerHTML = `<span>👤 Guest</span>`;
+            document.getElementById('portalUser').innerHTML = '<span>👤 Guest</span>';
             document.querySelectorAll('.dashboard').forEach(d => d.classList.remove('active'));
             document.getElementById('loginScreen').style.display = 'block';
-            document.getElementById('loginStatus').innerHTML = '';
             document.getElementById('attackResult').innerHTML = '';
         }
 
-        // ==================== CONFIDENTIALITY ====================
         function loadStudentData() {
             const userList = document.getElementById('userList');
             userList.innerHTML = students.map((s) => `
                 <div class="user-card ${s.id === 'STU001' ? 'own' : ''}" onclick="${s.id === 'STU001' ? '' : 'alertConfidentiality()'}">
-                    <div class="avatar">${s.name.split(' ').map(n => n[0]).join('')}</div>
+                    <div class="avatar">${s.name.charAt(0)}</div>
                     <div class="name">${s.name}</div>
                     <div class="marks-hidden">🔒</div>
-                    <div class="marks-visible">
-                        Math: ${s.id === 'STU001' ? students[0].marks.Mathematics : '??'}<br>
-                        Sci: ${s.id === 'STU001' ? students[0].marks.Science : '??'}<br>
-                        Eng: ${s.id === 'STU001' ? students[0].marks.English : '??'}
-                    </div>
+                    <div class="marks-visible">Math: ${s.marks.Mathematics}<br>Sci: ${s.marks.Science}<br>Eng: ${s.marks.English}</div>
                 </div>
             `).join('');
 
             const myMarks = students[0].marks;
             document.getElementById('myMarksBody').innerHTML = Object.entries(myMarks).map(([subject, marks]) => {
                 const { grade, class: gClass } = generateGrade(marks);
-                const hash = originalHashes[`STU001-${subject}`];
-                return `<tr class="own-row"><td><strong>${subject}</strong></td><td>${marks}/100</td><td><span class="grade ${gClass}">${grade}</span></td><td style="font-family: monospace; font-size: 0.75rem; color: var(--integ-purple);">${hash ? hash.slice(0, 20) + '...' : 'Loading...'}</td></tr>`;
+                const hash = originalHashes[`STU001-${subject}`] || 'Loading...';
+                return `<tr class="own-row"><td><strong>${subject}</strong></td><td>${marks}/100</td><td><span class="grade ${gClass}">${grade}</span></td><td style="font-family: monospace; font-size: 0.7rem; color: var(--integ-purple);">${hash.substring(0, 30)}...</td></tr>`;
             }).join('');
         }
 
         function alertConfidentiality() {
-            alert('🔒 Confidentiality Violation Blocked!\n\nඔබට අනෙක් සිසුන්ගේ ලකුණු බැලීමට අවසර නැත.\nමෙය Confidentiality රක්ෂා කිරීමයි!');
+            alert('🔒 Confidentiality Violation Blocked!\n\nඔබට අනෙක් සිසුන්ගේ ලකුණු බැලීමට අවසර නැත.');
         }
 
-        // ==================== INTEGRITY ====================
         function generateOriginalHashes() {
+            console.log('=== Generating Hashes ===');
+            originalHashes = {};
+            
             students.forEach(s => {
                 Object.entries(s.marks).forEach(([subject, marks]) => {
-                    originalHashes[`${s.id}-${subject}`] = simpleHash(`${s.id}-${subject}-${marks}`);
+                    const key = `${s.id}-${subject}`;
+                    const data = `${s.id}-${subject}-${marks}`;
+                    originalHashes[key] = simpleHash(data);
+                    console.log(`${key}: ${originalHashes[key]}`);
                 });
             });
+            
+            console.log('=== Hashes Generated ===');
         }
 
         function tryTamper() {
@@ -750,12 +482,16 @@
             const originalHash = originalHashes[key];
             const tamperedHash = simpleHash(`STU001-${subject}-${newMarks}`);
 
+            console.log('Original:', originalHash);
+            console.log('Tampered:', tamperedHash);
+            console.log('Different?', originalHash !== tamperedHash);
+
             document.getElementById('integrityStatus').className = 'integrity-status tampered';
             document.getElementById('integrityStatus').innerHTML = `
                 ⚠️ ලකුණු වෙනස් කිරීමට උත්සාහ කෙරිණි!<br>
                 <small style="font-weight: normal; display: block; margin-top: 4px;">
-                    Original Hash: ${originalHash ? originalHash.slice(0, 30) : '...'}...<br>
-                    Tampered Hash: ${tamperedHash.slice(0, 30)}...<br>
+                    Original Hash: <span style="color: var(--avail-green);">${originalHash}</span><br>
+                    Tampered Hash: <span style="color: var(--accent-red);">${tamperedHash}</span><br>
                     <strong style="color: var(--accent-red);">Hash mismatch! වෙනස් කිරීම හඳුනාගත්තා!</strong>
                 </small>
             `;
@@ -763,28 +499,18 @@
 
         function verifyIntegrity() {
             document.getElementById('integrityStatus').className = 'integrity-status verified';
-            document.getElementById('integrityStatus').innerHTML = `
-                ✅ සියලුම ලකුණු අඛණ්ඩයි!<br>
-                <small style="font-weight: normal; display: block; margin-top: 4px;">
-                    Hash verification සාර්ථකයි — කිසිදු අනවසර වෙනසක් සිදු වී නැත.<br>
-                    <strong style="color: var(--avail-green);">Integrity 100% ආරක්ෂිතයි!</strong>
-                </small>
-            `;
+            document.getElementById('integrityStatus').innerHTML = '✅ සියලුම ලකුණු අඛණ්ඩයි - කිසිදු වෙනසක් සිදු වී නැත';
         }
 
-        // ==================== ADMIN & AVAILABILITY ====================
         function loadAdminData() {
-            const tbody = document.getElementById('allMarksBody');
-            tbody.innerHTML = students.map(s => {
-                const hash = simpleHash(`${s.id}-${Object.values(s.marks).join('-')}`);
-                return `<tr>
-                    <td><strong>${s.name}</strong><br><small style="color: var(--text-muted);">${s.id}</small></td>
+            document.getElementById('allMarksBody').innerHTML = students.map(s => `
+                <tr>
+                    <td><strong>${s.name}</strong><br><small>${s.id}</small></td>
                     <td>${s.marks.Mathematics} <span class="grade ${generateGrade(s.marks.Mathematics).class}">${generateGrade(s.marks.Mathematics).grade}</span></td>
                     <td>${s.marks.Science} <span class="grade ${generateGrade(s.marks.Science).class}">${generateGrade(s.marks.Science).grade}</span></td>
                     <td>${s.marks.English} <span class="grade ${generateGrade(s.marks.English).class}">${generateGrade(s.marks.English).grade}</span></td>
-                    <td style="font-family: monospace; font-size: 0.75rem; color: var(--integ-purple);">${hash.slice(0, 20)}...</td>
-                </tr>`;
-            }).join('');
+                </tr>
+            `).join('');
         }
 
         function updateLoad() {
@@ -794,48 +520,31 @@
         }
 
         function updateServerStatus(load) {
+            load = parseInt(load);
             const dot = document.getElementById('serverDot');
             const status = document.getElementById('serverStatus');
             const response = document.getElementById('responseTime');
-            const uptime = document.getElementById('uptime');
-
-            load = parseInt(load);
-            
-            // Logic: If load is high AND redundancy is OFF, server crashes
-            const isOverloaded = load > 5000 && !redundancyEnabled;
 
             if (load <= 500) {
                 dot.className = 'server-dot';
-                status.textContent = 'Server: Healthy';
+                status.textContent = 'Healthy';
                 response.textContent = '45ms';
                 response.className = 'response-time good';
-                uptime.textContent = '99.99%';
             } else if (load <= 2000) {
                 dot.className = 'server-dot warning';
-                status.textContent = 'Server: Under Load';
+                status.textContent = 'Under Load';
                 response.textContent = '180ms';
-                response.className = 'response-time good'; // Still OK
-                uptime.textContent = '99.5%';
-            } else if (load <= 5000) {
-                dot.className = 'server-dot warning';
-                status.textContent = 'Server: High Load';
-                response.textContent = '850ms';
                 response.className = 'response-time good';
-                uptime.textContent = '98.2%';
+            } else if (load <= 5000 && redundancyEnabled) {
+                dot.className = 'server-dot';
+                status.textContent = 'Auto-Scaled';
+                response.textContent = '120ms';
+                response.className = 'response-time good';
             } else {
-                if (isOverloaded) {
-                    dot.className = 'server-dot down';
-                    status.textContent = 'Server: OFFLINE (Crashed)';
-                    response.textContent = '∞';
-                    response.className = 'response-time critical';
-                    uptime.textContent = '0%';
-                } else {
-                    dot.className = 'server-dot';
-                    status.textContent = 'Server: Healthy (Auto-Scaled)';
-                    response.textContent = '120ms';
-                    response.className = 'response-time good';
-                    uptime.textContent = '99.99%';
-                }
+                dot.className = redundancyEnabled ? 'server-dot' : 'server-dot down';
+                status.textContent = redundancyEnabled ? 'Healthy (Scaled)' : 'OFFLINE';
+                response.textContent = redundancyEnabled ? '120ms' : '∞';
+                response.className = redundancyEnabled ? 'response-time good' : 'response-time critical';
             }
         }
 
@@ -843,11 +552,10 @@
             document.getElementById('userLoad').value = 8000;
             updateLoad();
             
-            const status = document.getElementById('loadStatus');
             if (!redundancyEnabled) {
-                status.innerHTML = `<div class="status-banner error">💥 Traffic spike නිසා server එක crash විය! Availability බිඳ වැටුණි.</div>`;
+                document.getElementById('loadStatus').innerHTML = '<div class="status-banner error">💥 Server crash විය!</div>';
             } else {
-                status.innerHTML = `<div class="status-banner success">✅ Redundancy සක්‍රීයයි! Traffic spike එක auto-scaled විය. Availability ආරක්ෂා විය!</div>`;
+                document.getElementById('loadStatus').innerHTML = '<div class="status-banner success">✅ Redundancy නිසා online විය!</div>';
             }
         }
 
@@ -857,27 +565,25 @@
             
             if (redundancyEnabled) {
                 btn.textContent = '🔄 Redundancy: ACTIVE';
-                btn.style.background = 'linear-gradient(135deg, var(--accent-green), var(--accent-cyan))';
-                document.getElementById('loadStatus').innerHTML = `<div class="status-banner info"> Redundancy සක්‍රීය විය! දැන් backup servers 3ක් ක්‍රියාත්මකයි.</div>`;
+                btn.style.background = 'linear-gradient(135deg, var(--avail-green), var(--accent-cyan))';
             } else {
                 btn.textContent = '🔄 Enable Redundancy';
                 btn.style.background = '';
             }
-            updateLoad(); // Re-evaluate status
+            updateLoad();
         }
 
-        // ==================== ATTACKER MODE ====================
         function attackConfidentiality() {
-            document.getElementById('attackResult').innerHTML = `<div class="status-banner error">🔒 Attack Blocked! Role-based access control නිසා අනෙක් සිසුන්ගේ දත්ත බැලීමට නොහැක.</div>`;
+            document.getElementById('attackResult').innerHTML = '<div class="status-banner error">🔒 Blocked! Role-based access control.</div>';
         }
         function attackIntegrity() {
-            document.getElementById('attackResult').innerHTML = `<div class="status-banner error">🛡️ Tampering Detected! Hash verification මගින් වෙනස් කිරීම වහාම හඳුනාගත්තා.</div>`;
+            document.getElementById('attackResult').innerHTML = '<div class="status-banner error">🛡️ Detected! Hash verification.</div>';
         }
         function attackAvailability() {
-            document.getElementById('attackResult').innerHTML = `<div class="status-banner ${redundancyEnabled ? 'success' : 'error'}">${redundancyEnabled ? '✅' : '💥'} DDoS Attack ${redundancyEnabled ? 'Mitigated!' : 'Successful!'}</div>`;
+            document.getElementById('attackResult').innerHTML = `<div class="status-banner ${redundancyEnabled ? 'success' : 'error'}">${redundancyEnabled ? '✅' : '💥'} Attack ${redundancyEnabled ? 'Mitigated!' : 'Successful!'}</div>`;
         }
 
-        // ==================== Initialize ====================
+        // Initialize
         generateOriginalHashes();
     </script>
 </body>
