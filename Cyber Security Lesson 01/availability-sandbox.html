@@ -1,0 +1,1906 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ Availability Sandbox</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap');
+
+        :root {
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #111827;
+            --bg-card: #1a2236;
+            --bg-card-hover: #1f2a42;
+            --accent-green: #10b981;
+            --accent-emerald: #059669;
+            --accent-blue: #3b82f6;
+            --accent-cyan: #06b6d4;
+            --accent-yellow: #f59e0b;
+            --accent-orange: #f97316;
+            --accent-red: #ef4444;
+            --accent-pink: #ec4899;
+            --accent-purple: #8b5cf6;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border-color: #2a3550;
+            --glow-green: rgba(16, 185, 129, 0.3);
+            --glow-red: rgba(239, 68, 68, 0.3);
+            --glow-yellow: rgba(245, 158, 11, 0.3);
+            --glow-blue: rgba(59, 130, 246, 0.3);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .bg-animation .particle {
+            position: absolute;
+            width: 3px; height: 3px;
+            background: var(--accent-cyan);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: flowParticle linear infinite;
+        }
+
+        @keyframes flowParticle {
+            0% { transform: translateY(-10px) scale(0); opacity: 0; }
+            10% { opacity: 0.5; }
+            90% { opacity: 0.5; }
+            100% { transform: translateY(100vh) scale(1); opacity: 0; }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            margin-bottom: 30px;
+        }
+
+        .header .icon {
+            font-size: 56px;
+            display: inline-block;
+            animation: pulseGlow 2s ease-in-out infinite;
+            filter: drop-shadow(0 0 25px var(--glow-green));
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 25px var(--glow-green)); }
+            50% { transform: scale(1.05); filter: drop-shadow(0 0 40px var(--glow-green)); }
+        }
+
+        .header h1 {
+            font-size: 2.3rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 15px 0 10px;
+        }
+
+        .header .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            max-width: 650px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        .header .subtitle span {
+            color: var(--accent-green);
+            font-weight: 700;
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            padding: 0 10px;
+        }
+
+        .tab-btn {
+            padding: 12px 20px;
+            border: 2px solid var(--border-color);
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-btn:hover {
+            border-color: var(--accent-green);
+            color: var(--text-primary);
+            background: var(--bg-card-hover);
+            transform: translateY(-2px);
+        }
+
+        .tab-btn.active {
+            border-color: var(--accent-green);
+            background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(6,182,212,0.1));
+            color: var(--accent-green);
+            box-shadow: 0 0 20px rgba(16,185,129,0.15);
+        }
+
+        .tab-btn .emoji { font-size: 1.2rem; }
+
+        /* Tab Content */
+        .tab-content { display: none; animation: fadeInUp 0.5s ease; }
+        .tab-content.active { display: block; }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Card Styles */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover { border-color: rgba(16,185,129,0.3); }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        /* Server Visualization */
+        .server-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+
+        .server {
+            width: 140px;
+            height: 180px;
+            background: linear-gradient(145deg, var(--bg-secondary), var(--bg-card));
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px 10px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .server::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: var(--accent-green);
+            transition: background 0.3s ease;
+        }
+
+        .server.healthy::before { background: var(--accent-green); }
+        .server.warning::before { background: var(--accent-yellow); }
+        .server.critical::before { background: var(--accent-red); }
+        .server.down::before { background: var(--text-muted); }
+
+        .server-icon {
+            font-size: 2.5rem;
+            margin: 10px 0;
+            transition: all 0.3s ease;
+        }
+
+        .server.healthy .server-icon { animation: healthyPulse 2s infinite; }
+        .server.down .server-icon { filter: grayscale(1) brightness(0.5); }
+
+        @keyframes healthyPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .server-name {
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+            text-align: center;
+        }
+
+        .server-status {
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .server.healthy .server-status {
+            background: rgba(16,185,129,0.15);
+            color: var(--accent-green);
+        }
+        .server.warning .server-status {
+            background: rgba(245,158,11,0.15);
+            color: var(--accent-yellow);
+        }
+        .server.critical .server-status {
+            background: rgba(239,68,68,0.15);
+            color: var(--accent-red);
+        }
+        .server.down .server-status {
+            background: rgba(100,116,139,0.15);
+            color: var(--text-muted);
+        }
+
+        .server-load {
+            width: 100%;
+            margin-top: 12px;
+        }
+
+        .server-load label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+        .load-bar-bg {
+            height: 6px;
+            background: var(--border-color);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .load-bar {
+            height: 100%;
+            border-radius: 3px;
+            transition: all 0.5s ease;
+            background: linear-gradient(90deg, var(--accent-green), var(--accent-cyan));
+        }
+
+        .server.warning .load-bar { background: linear-gradient(90deg, var(--accent-yellow), var(--accent-orange)); }
+        .server.critical .load-bar { background: linear-gradient(90deg, var(--accent-orange), var(--accent-red)); }
+        .server.down .load-bar { background: var(--text-muted); width: 0%; }
+
+        /* Traffic Visualization */
+        .traffic-container {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            min-height: 100px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .traffic-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .traffic-packet {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--accent-blue);
+            animation: trafficFlow 1.5s linear infinite;
+            opacity: 0.8;
+            box-shadow: 0 0 10px rgba(59,130,246,0.5);
+        }
+
+        .traffic-packet.legit {
+            background: var(--accent-green);
+            box-shadow: 0 0 10px rgba(16,185,129,0.5);
+        }
+
+        .traffic-packet.attack {
+            background: var(--accent-red);
+            box-shadow: 0 0 10px rgba(239,68,68,0.5);
+            animation-duration: 0.8s;
+        }
+
+        @keyframes trafficFlow {
+            0% { transform: translateX(-20px) translateY(0) scale(0.5); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateX(calc(100vw + 20px)) translateY(var(--offset, 0)) scale(0.5); opacity: 0; }
+        }
+
+        /* Metrics Dashboard */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .metric-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+            margin: 4px 0;
+        }
+
+        .metric-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-card.uptime .metric-value { color: var(--accent-green); }
+        .metric-card.response .metric-value { color: var(--accent-blue); }
+        .metric-card.requests .metric-value { color: var(--accent-cyan); }
+        .metric-card.errors .metric-value { color: var(--accent-red); }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn:active { transform: scale(0.97); }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-emerald));
+            color: white;
+            box-shadow: 0 4px 15px rgba(16,185,129,0.3);
+        }
+        .btn-primary:hover {
+            box-shadow: 0 6px 25px rgba(16,185,129,0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--accent-red), var(--accent-orange));
+            color: white;
+            box-shadow: 0 4px 15px rgba(239,68,68,0.3);
+        }
+        .btn-danger:hover {
+            box-shadow: 0 6px 25px rgba(239,68,68,0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--accent-yellow), var(--accent-orange));
+            color: #1a1a2e;
+            box-shadow: 0 4px 15px rgba(245,158,11,0.3);
+        }
+        .btn-warning:hover {
+            box-shadow: 0 6px 25px rgba(245,158,11,0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-purple {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            color: white;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Status Messages */
+        .status-banner {
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin: 16px 0;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .status-banner.success {
+            background: rgba(16,185,129,0.1);
+            border: 1px solid rgba(16,185,129,0.3);
+            color: var(--accent-green);
+        }
+        .status-banner.error {
+            background: rgba(239,68,68,0.1);
+            border: 1px solid rgba(239,68,68,0.3);
+            color: var(--accent-red);
+        }
+        .status-banner.warning {
+            background: rgba(245,158,11,0.1);
+            border: 1px solid rgba(245,158,11,0.3);
+            color: var(--accent-yellow);
+        }
+        .status-banner.info {
+            background: rgba(59,130,246,0.1);
+            border: 1px solid rgba(59,130,246,0.3);
+            color: var(--accent-blue);
+        }
+
+        /* Backup Visualization */
+        .backup-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+
+        .backup-card {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .backup-card.active {
+            border-color: var(--accent-green);
+            background: rgba(16,185,129,0.05);
+        }
+
+        .backup-card .icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .backup-card h4 {
+            font-size: 0.95rem;
+            margin-bottom: 6px;
+        }
+
+        .backup-card p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .backup-progress {
+            margin-top: 12px;
+        }
+
+        .backup-progress .bar-bg {
+            height: 6px;
+            background: var(--border-color);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .backup-progress .bar {
+            height: 100%;
+            background: var(--accent-green);
+            border-radius: 3px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        /* Redundancy Failover Animation */
+        .failover-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .failover-arrow {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+        }
+
+        .failover-arrow.active {
+            color: var(--accent-green);
+            animation: arrowPulse 0.5s ease;
+        }
+
+        @keyframes arrowPulse {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(5px); }
+        }
+
+        /* Website Preview */
+        .website-preview {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .website-header {
+            background: var(--bg-card);
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .website-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .website-dot.red { background: #ff5f57; }
+        .website-dot.yellow { background: #ffbd2e; }
+        .website-dot.green { background: #28ca41; }
+
+        .website-url {
+            flex: 1;
+            background: var(--bg-secondary);
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .website-body {
+            padding: 30px;
+            text-align: center;
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .website-body.loading {
+            color: var(--accent-yellow);
+        }
+
+        .website-body.error {
+            color: var(--accent-red);
+        }
+
+        .website-body.success {
+            color: var(--accent-green);
+        }
+
+        .website-body .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--accent-yellow);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .website-body .checkmark {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            animation: bounceIn 0.5s ease;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        /* Scenario Box */
+        .scenario-box {
+            background: linear-gradient(135deg, rgba(239,68,68,0.08), rgba(245,158,11,0.05));
+            border: 1px solid rgba(239,68,68,0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 16px 0;
+        }
+
+        .scenario-box h4 {
+            color: var(--accent-red);
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .scenario-box p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+
+        .scenario-box .solution {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(16,185,129,0.2);
+        }
+
+        .scenario-box .solution h4 {
+            color: var(--accent-green);
+        }
+
+        /* Info Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+
+        .info-item {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .info-item:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent-green);
+        }
+
+        .info-item .icon { font-size: 2rem; margin-bottom: 10px; }
+        .info-item h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 6px; }
+        .info-item p { font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 16px 0;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.85rem;
+        }
+
+        .comparison-table th {
+            background: var(--bg-secondary);
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+
+        .quiz-option {
+            display: block;
+            width: 100%;
+            padding: 14px 18px;
+            margin: 8px 0;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--accent-green);
+            background: var(--bg-card-hover);
+        }
+
+        .quiz-option.correct {
+            border-color: var(--accent-green);
+            background: rgba(16,185,129,0.1);
+            color: var(--accent-green);
+        }
+
+        .quiz-option.wrong {
+            border-color: var(--accent-red);
+            background: rgba(239,68,68,0.1);
+            color: var(--accent-red);
+        }
+
+        .quiz-option:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        /* Status Messages for Quiz */
+        .status-msg {
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            animation: slideIn 0.3s ease;
+        }
+
+        .status-msg.success {
+            background: rgba(16,185,129,0.1);
+            border: 1px solid rgba(16,185,129,0.3);
+            color: var(--accent-green);
+        }
+
+        .status-msg.error {
+            background: rgba(239,68,68,0.1);
+            border: 1px solid rgba(239,68,68,0.3);
+            color: var(--accent-red);
+        }
+
+        /* Quiz Progress Bar */
+        .strength-bar-bg {
+            height: 6px;
+            background: var(--border-color);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .strength-bar {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.5s ease;
+            background: linear-gradient(90deg, var(--accent-green), var(--accent-cyan));
+        }
+
+        /* Score Display */
+        .score-display {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(59,130,246,0.05));
+            border: 2px solid var(--accent-green);
+            border-radius: 16px;
+        }
+
+        .score-display .score-num {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--accent-green);
+            margin: 10px 0;
+        }
+
+        .score-display .score-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Utility: Hidden class */
+        .hidden {
+            display: none !important;
+        }
+
+        .comparison-table th:first-child { border-radius: 8px 0 0 0; }
+        .comparison-table th:last-child { border-radius: 0 8px 0 0; }
+
+        .comparison-table td:first-child { font-weight: 600; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.7rem; }
+            .tab-btn { padding: 10px 14px; font-size: 0.85rem; }
+            .card { padding: 20px; }
+            .server { width: 120px; height: 160px; }
+            .btn-group { flex-direction: column; }
+            .btn { width: 100%; justify-content: center; }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-green); }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <!-- Background Animation -->
+    <div class="bg-animation" id="bgAnimation"></div>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="icon">⚡</div>
+            <h1>Availability Sandbox</h1>
+            <p class="subtitle">
+                <span>පවතින බව (Availability)</span> ප්‍රායෝගිකව ඉගෙන ගන්න.<br>
+                DDoS Attacks, Backups සහ Redundancy අත්විඳින්න.
+            </p>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-nav">
+            <button class="tab-btn active" onclick="switchTab('ddos')">
+                <span class="emoji">🌐</span> DDoS Attack Sim
+            </button>
+            <button class="tab-btn" onclick="switchTab('backup')">
+                <span class="emoji">💾</span> Backup & Restore
+            </button>
+            <button class="tab-btn" onclick="switchTab('redundancy')">
+                <span class="emoji">🔄</span> Redundancy Failover
+            </button>
+            <button class="tab-btn" onclick="switchTab('quiz')">
+                <span class="emoji">📝</span> Quiz Challenge
+            </button>
+        </div>
+
+        <!-- ==================== TAB 1: DDoS ATTACK ==================== -->
+        <div class="tab-content active" id="tab-ddos">
+            <!-- Info Cards -->
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="icon">📈</div>
+                    <h4>Normal Traffic</h4>
+                    <p>සාමාන්‍ය පරිශීලකයින්ගේ ඉල්ලීම්</p>
+                </div>
+                <div class="info-item">
+                    <div class="icon">💥</div>
+                    <h4>DDoS Attack</h4>
+                    <p>ව්‍යාජ traffic එකින් server එක crash කිරීම</p>
+                </div>
+                <div class="info-item">
+                    <div class="icon">🛡️</div>
+                    <h4>Mitigation</h4>
+                    <p>Attack එක හඳුනාගෙන වළක්වා ගැනීම</p>
+                </div>
+            </div>
+
+            <!-- Server Status -->
+            <div class="card">
+                <div class="card-title">🖥️ Server Status Monitor</div>
+                <div class="card-desc">
+                    පහත server එකේ තත්ත්වය බලන්න. DDoS attack එකක් ආරම්භ කළ විට කුමක් සිදුවේද කියලා බලන්න!
+                </div>
+
+                <div class="server-container">
+                    <div class="server healthy" id="mainServer">
+                        <div class="server-icon">🖥️</div>
+                        <div class="server-name">Main Server</div>
+                        <div class="server-status">Online</div>
+                        <div class="server-load">
+                            <label><span>Load</span><span id="loadPercent">23%</span></label>
+                            <div class="load-bar-bg"><div class="load-bar" id="loadBar" style="width: 23%"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Metrics -->
+                <div class="metrics-grid">
+                    <div class="metric-card uptime">
+                        <div class="metric-label">Uptime</div>
+                        <div class="metric-value" id="uptimeMetric">99.9%</div>
+                    </div>
+                    <div class="metric-card response">
+                        <div class="metric-label">Response Time</div>
+                        <div class="metric-value" id="responseMetric">45ms</div>
+                    </div>
+                    <div class="metric-card requests">
+                        <div class="metric-label">Requests/sec</div>
+                        <div class="metric-value" id="requestsMetric">1,234</div>
+                    </div>
+                    <div class="metric-card errors">
+                        <div class="metric-label">Error Rate</div>
+                        <div class="metric-value" id="errorsMetric">0.1%</div>
+                    </div>
+                </div>
+
+                <!-- Traffic Visualization -->
+                <div class="traffic-container" id="trafficContainer">
+                    <div class="traffic-label">
+                        <span>📡 Live Traffic Flow</span>
+                        <span id="trafficCount">Legit: 124/s</span>
+                    </div>
+                    <!-- Packets will be added here by JS -->
+                </div>
+
+                <!-- Website Preview -->
+                <div class="website-preview">
+                    <div class="website-header">
+                        <div class="website-dot red"></div>
+                        <div class="website-dot yellow"></div>
+                        <div class="website-dot green"></div>
+                        <div class="website-url">https://mywebsite.lk</div>
+                    </div>
+                    <div class="website-body success" id="websiteBody">
+                        <div class="checkmark">✅</div>
+                        <strong>Website is Online!</strong><br>
+                        <span style="color: var(--text-muted); font-size: 0.85rem; margin-top: 8px;">
+                            සියලුම පරිශීලකයින්ට ප්‍රවේශය ලබා ගත හැක
+                        </span>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-danger" id="ddosBtn" onclick="startDDoS()">💥 Launch DDoS Attack</button>
+                    <button class="btn btn-primary" id="mitigateBtn" onclick="mitigateAttack()" disabled>🛡️ Activate Mitigation</button>
+                    <button class="btn btn-purple" onclick="resetDDoS()">🔄 Reset</button>
+                </div>
+
+                <div id="ddosStatus"></div>
+            </div>
+
+            <!-- Scenario -->
+            <div class="card">
+                <div class="card-title">💡 Real-world Scenario</div>
+                <div class="scenario-box">
+                    <h4>⚠️ 2023 Sri Lanka Bank DDoS Attack</h4>
+                    <p>හැකර්වරුන් විසින් බැංකු වෙබ් අඩවියකට තත්පරයට requests ලක්ෂ ගණනක් යවා සර්වර් එක crash කරන ලදී. පාරිභෝගිකයින්ට online banking භාවිතා කළ නොහැකි විය.</p>
+                    <div class="solution">
+                        <h4>✅ විසඳුම: DDoS Protection + Redundancy</h4>
+                        <p>Cloudflare වැනි DDoS protection service එකක් + multiple servers (redundancy) භාවිතා කිරීමෙන් මෙම ගැටලුව වළක්වා ගත හැක.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB 2: BACKUP & RESTORE ==================== -->
+        <div class="tab-content" id="tab-backup">
+            <div class="card">
+                <div class="card-title">💾 Backup & Disaster Recovery Simulator</div>
+                <div class="card-desc">
+                    දත්ත නිරන්තරයෙන් backup කර තැබීමෙන්, පද්ධතියක් බිඳ වැටුණ විට වහාම යථා තත්ත්වයට ගත හැක.
+                </div>
+
+                <!-- Backup Grid -->
+                <div class="backup-grid">
+                    <div class="backup-card active" id="primary">
+                        <div class="icon">🖥️</div>
+                        <h4>Primary Server</h4>
+                        <p>Live production data</p>
+                        <div class="backup-progress">
+                            <div class="bar-bg"><div class="bar" id="primaryBar" style="width: 100%"></div></div>
+                            <span style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; display: block;">Status: Active</span>
+                        </div>
+                    </div>
+                    <div class="backup-card" id="backup1">
+                        <div class="icon">🗄️</div>
+                        <h4>Backup Server #1</h4>
+                        <p>Local backup - Hourly</p>
+                        <div class="backup-progress">
+                            <div class="bar-bg"><div class="bar" id="backup1Bar" style="width: 0%"></div></div>
+                            <span style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; display: block;">Last: 2 hours ago</span>
+                        </div>
+                    </div>
+                    <div class="backup-card" id="backup2">
+                        <div class="icon">☁️</div>
+                        <h4>Cloud Backup</h4>
+                        <p>Off-site backup - Daily</p>
+                        <div class="backup-progress">
+                            <div class="bar-bg"><div class="bar" id="backup2Bar" style="width: 0%"></div></div>
+                            <span style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; display: block;">Last: 1 day ago</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="btn-group">
+                    <button class="btn btn-warning" onclick="simulateCrash()">💥 Simulate Server Crash</button>
+                    <button class="btn btn-primary" id="backupBtn" onclick="startBackup()">📤 Start Backup Now</button>
+                    <button class="btn btn-success" id="restoreBtn" onclick="startRestore()" disabled>📥 Restore from Backup</button>
+                </div>
+
+                <div id="backupStatus"></div>
+
+                <!-- Recovery Timeline -->
+                <div style="margin-top: 24px;">
+                    <h4 style="font-size: 0.95rem; margin-bottom: 12px;">📊 Recovery Timeline Comparison</h4>
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Scenario</th>
+                            <th>Without Backup</th>
+                            <th>With Backup</th>
+                        </tr>
+                        <tr>
+                            <td>Server Crash</td>
+                            <td style="color: var(--accent-red);">❌ දින ගණනාවක් downtime</td>
+                            <td style="color: var(--accent-green);">✅ මිනිත්තු කිහිපයකින් restore</td>
+                        </tr>
+                        <tr>
+                            <td>Data Loss</td>
+                            <td style="color: var(--accent-red);">❌ සියලු දත්ත නැතිවේ</td>
+                            <td style="color: var(--accent-green);">✅ අවසන් backup දක්වා ආරක්ෂිත</td>
+                        </tr>
+                        <tr>
+                            <td>Business Impact</td>
+                            <td style="color: var(--accent-red);">❌ විශාල මූල්‍ය හානිය</td>
+                            <td style="color: var(--accent-green);">✅ අවම බාධාවක්</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Best Practices -->
+            <div class="card">
+                <div class="card-title">📋 3-2-1 Backup Rule</div>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="icon">🔢</div>
+                        <h4>3 Copies</h4>
+                        <p>දත්ත වල පිටපත් 3ක් තබන්න (1 primary + 2 backups)</p>
+                    </div>
+                    <div class="info-item">
+                        <div class="icon">💾</div>
+                        <h4>2 Different Media</h4>
+                        <p>වෙනස් storage types 2ක තබන්න (HDD + Cloud)</p>
+                    </div>
+                    <div class="info-item">
+                        <div class="icon">🌍</div>
+                        <h4>1 Off-site</h4>
+                        <p>එක පිටපතක් වෙනත් ස්ථානයක තබන්න</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB 3: REDUNDANCY ==================== -->
+        <div class="tab-content" id="tab-redundancy">
+            <div class="card">
+                <div class="card-title">🔄 Redundancy & Failover Simulator</div>
+                <div class="card-desc">
+                    එකම සේවාව සඳහා servers කිහිපයක් තැබීමෙන්, එකක් ක්‍රියාවිරහිත වුවහොත් අනෙක වහාම ක්‍රියාත්මක වේ.
+                </div>
+
+                <!-- Redundant Servers -->
+                <div class="server-container">
+                    <div class="server healthy" id="serverA">
+                        <div class="server-icon">🖥️</div>
+                        <div class="server-name">Server A</div>
+                        <div class="server-status">Active</div>
+                        <div class="server-load">
+                            <label><span>Load</span><span id="loadA">35%</span></label>
+                            <div class="load-bar-bg"><div class="load-bar" id="barA" style="width: 35%"></div></div>
+                        </div>
+                    </div>
+
+                    <div class="failover-arrow" id="arrow1">➡️</div>
+
+                    <div class="server healthy" id="serverB">
+                        <div class="server-icon">🖥️</div>
+                        <div class="server-name">Server B</div>
+                        <div class="server-status">Standby</div>
+                        <div class="server-load">
+                            <label><span>Load</span><span id="loadB">0%</span></label>
+                            <div class="load-bar-bg"><div class="load-bar" id="barB" style="width: 0%"></div></div>
+                        </div>
+                    </div>
+
+                    <div class="failover-arrow" id="arrow2">➡️</div>
+
+                    <div class="server healthy" id="serverC">
+                        <div class="server-icon">🖥️</div>
+                        <div class="server-name">Server C</div>
+                        <div class="server-status">Standby</div>
+                        <div class="server-load">
+                            <label><span>Load</span><span id="loadC">0%</span></label>
+                            <div class="load-bar-bg"><div class="load-bar" id="barC" style="width: 0%"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Load Balancer Info -->
+                <div style="text-align: center; margin: 16px 0; padding: 12px; background: var(--bg-secondary); border-radius: 10px;">
+                    <span style="font-size: 0.85rem; color: var(--text-muted);">
+                        ⚖️ <strong>Load Balancer:</strong> සියලුම requests සර්වර් අතර සමානව බෙදා හරිනු ලැබේ
+                    </span>
+                </div>
+
+                <!-- Actions -->
+                <div class="btn-group">
+                    <button class="btn btn-danger" id="crashBtn" onclick="crashServer()">💥 Crash Server A</button>
+                    <button class="btn btn-success" id="recoverBtn" onclick="recoverServer()" disabled>🔧 Recover Server A</button>
+                    <button class="btn btn-purple" onclick="resetRedundancy()">🔄 Reset</button>
+                </div>
+
+                <div id="redundancyStatus"></div>
+
+                <!-- Failover Animation Preview -->
+                <div class="website-preview" style="margin-top: 20px;">
+                    <div class="website-header">
+                        <div class="website-dot red"></div>
+                        <div class="website-dot yellow"></div>
+                        <div class="website-dot green"></div>
+                        <div class="website-url">https://app.example.com</div>
+                    </div>
+                    <div class="website-body success" id="appBody">
+                        <div class="checkmark">🟢</div>
+                        <strong>All Systems Operational</strong><br>
+                        <span style="color: var(--text-muted); font-size: 0.85rem; margin-top: 8px;">
+                            Active Server: <span id="activeServer">Server A</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Why Redundancy -->
+            <div class="card">
+                <div class="card-title">🤔 ඇයි Redundancy අවශ්‍යද?</div>
+                <table class="comparison-table">
+                    <tr>
+                        <th>අවස්ථාව</th>
+                        <th>Single Server</th>
+                        <th>Redundant Servers</th>
+                    </tr>
+                    <tr>
+                        <td>Hardware Failure</td>
+                        <td style="color: var(--accent-red);">❌ සේවාව නතර වේ</td>
+                        <td style="color: var(--accent-green);">✅ අනෙක් server එක ක්‍රියාත්මක</td>
+                    </tr>
+                    <tr>
+                        <td>Maintenance</td>
+                        <td style="color: var(--accent-red);">❌ downtime අවශ්‍ය</td>
+                        <td style="color: var(--accent-green);">✅ zero-downtime updates</td>
+                    </tr>
+                    <tr>
+                        <td>Traffic Spike</td>
+                        <td style="color: var(--accent-red);">❌ server overload</td>
+                        <td style="color: var(--accent-green);">✅ load balancing</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- ==================== TAB 4: QUIZ ==================== -->
+        <div class="tab-content" id="tab-quiz">
+            <div class="card">
+                <div class="card-title">📝 Availability Quiz Challenge</div>
+                <div class="card-desc">ඔබ Availability ගැන කොච්චර දැනගෙනද කියලා පරීක්ෂා කරන්න!</div>
+                <div id="quizContainer"></div>
+                <div id="quizResult" class="hidden"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== BACKGROUND PARTICLES ====================
+        function createParticles() {
+            const bg = document.getElementById('bgAnimation');
+            for (let i = 0; i < 40; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 10 + 8) + 's';
+                particle.style.animationDelay = (Math.random() * 5) + 's';
+                particle.style.setProperty('--offset', (Math.random() * 100 - 50) + 'px');
+                bg.appendChild(particle);
+            }
+        }
+        createParticles();
+
+        // ==================== TAB SWITCHING ====================
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tab-' + tabName).classList.add('active');
+            event.target.closest('.tab-btn').classList.add('active');
+        }
+
+        // ==================== DDoS SIMULATOR ====================
+        let ddosInterval = null;
+        let trafficInterval = null;
+        let isUnderAttack = false;
+
+        function startDDoS() {
+            if (isUnderAttack) return;
+            isUnderAttack = true;
+
+            const server = document.getElementById('mainServer');
+            const loadBar = document.getElementById('loadBar');
+            const loadPercent = document.getElementById('loadPercent');
+            const websiteBody = document.getElementById('websiteBody');
+            const ddosBtn = document.getElementById('ddosBtn');
+            const mitigateBtn = document.getElementById('mitigateBtn');
+            const status = document.getElementById('ddosStatus');
+
+            ddosBtn.disabled = true;
+            mitigateBtn.disabled = false;
+
+            // Add attack packets
+            startAttackTraffic();
+
+            // Simulate load increase
+            let load = 23;
+            ddosInterval = setInterval(() => {
+                load += Math.random() * 15;
+                if (load > 100) load = 100;
+
+                loadBar.style.width = load + '%';
+                loadPercent.textContent = Math.round(load) + '%';
+
+                // Update server status
+                if (load > 70 && load <= 85) {
+                    server.className = 'server warning';
+                    server.querySelector('.server-status').textContent = 'Warning';
+                } else if (load > 85 && load < 100) {
+                    server.className = 'server critical';
+                    server.querySelector('.server-status').textContent = 'Critical';
+                } else if (load >= 100) {
+                    server.className = 'server down';
+                    server.querySelector('.server-status').textContent = 'OFFLINE';
+                    server.querySelector('.server-icon').textContent = '💀';
+                    clearInterval(ddosInterval);
+
+                    // Update website
+                    websiteBody.className = 'website-body error';
+                    websiteBody.innerHTML = `
+                        <div style="font-size: 3rem;">❌</div>
+                        <strong>503 Service Unavailable</strong><br>
+                        <span style="color: var(--text-muted); font-size: 0.85rem; margin-top: 8px;">
+                            Server overloaded - DDoS Attack Detected!
+                        </span>
+                    `;
+
+                    // Update metrics
+                    document.getElementById('uptimeMetric').textContent = '0%';
+                    document.getElementById('responseMetric').textContent = '∞';
+                    document.getElementById('requestsMetric').textContent = '0';
+                    document.getElementById('errorsMetric').textContent = '100%';
+                    document.getElementById('errorsMetric').style.color = 'var(--accent-red)';
+
+                    status.innerHTML = `
+                        <div class="status-banner error">
+                            🔥 Availability බිඳ වැටුණි! DDoS attack එක නිසා server එක crash විය.
+                            සාමාන්‍ය පරිශීලකයින්ට දැන් වෙබ් අඩවියට ප්‍රවේශ විය නොහැක!
+                        </div>
+                    `;
+                }
+
+                // Update metrics during attack
+                document.getElementById('requestsMetric').textContent = 
+                    Math.floor(1234 + Math.random() * 50000).toLocaleString();
+                document.getElementById('responseMetric').textContent = 
+                    Math.floor(45 + load * 15) + 'ms';
+                document.getElementById('errorsMetric').textContent = 
+                    (Math.min(load * 0.8, 99)).toFixed(1) + '%';
+
+            }, 300);
+        }
+
+        function startAttackTraffic() {
+            const container = document.getElementById('trafficContainer');
+            const trafficCount = document.getElementById('trafficCount');
+
+            trafficInterval = setInterval(() => {
+                // Create attack packets
+                for (let i = 0; i < 8; i++) {
+                    setTimeout(() => {
+                        const packet = document.createElement('div');
+                        packet.className = 'traffic-packet attack';
+                        packet.style.top = (Math.random() * 80 + 10) + '%';
+                        packet.style.left = '-20px';
+                        container.appendChild(packet);
+                        setTimeout(() => packet.remove(), 1500);
+                    }, i * 100);
+                }
+
+                // Update counter
+                const legit = Math.max(0, 124 - Math.random() * 50);
+                const attack = Math.floor(Math.random() * 80000);
+                trafficCount.innerHTML = `Legit: ${Math.round(legit)}/s | <span style="color: var(--accent-red);">Attack: ${attack.toLocaleString()}/s</span>`;
+
+            }, 200);
+        }
+
+        function mitigateAttack() {
+            if (!isUnderAttack) return;
+
+            clearInterval(ddosInterval);
+            clearInterval(trafficInterval);
+
+            const server = document.getElementById('mainServer');
+            const loadBar = document.getElementById('loadBar');
+            const loadPercent = document.getElementById('loadPercent');
+            const websiteBody = document.getElementById('websiteBody');
+            const mitigateBtn = document.getElementById('mitigateBtn');
+            const status = document.getElementById('ddosStatus');
+
+            // Animate recovery
+            let load = 100;
+            const recoverInterval = setInterval(() => {
+                load -= 8;
+                if (load <= 23) {
+                    load = 23;
+                    clearInterval(recoverInterval);
+
+                    // Final state
+                    server.className = 'server healthy';
+                    server.querySelector('.server-status').textContent = 'Online';
+                    server.querySelector('.server-icon').textContent = '🖥️';
+
+                    websiteBody.className = 'website-body success';
+                    websiteBody.innerHTML = `
+                        <div class="checkmark">✅</div>
+                        <strong>Website is Online!</strong><br>
+                        <span style="color: var(--text-muted); font-size: 0.85rem; margin-top: 8px;">
+                            DDoS Mitigation Active - සියලුම පරිශීලකයින්ට ප්‍රවේශය ලබා ගත හැක
+                        </span>
+                    `;
+
+                    document.getElementById('uptimeMetric').textContent = '99.9%';
+                    document.getElementById('responseMetric').textContent = '45ms';
+                    document.getElementById('requestsMetric').textContent = '1,234';
+                    document.getElementById('errorsMetric').textContent = '0.1%';
+                    document.getElementById('errorsMetric').style.color = 'var(--accent-red)';
+
+                    status.innerHTML = `
+                        <div class="status-banner success">
+                            🛡️ සාර්ථකයි! DDoS mitigation ක්‍රියාත්මක විය.
+                            Attack traffic එක block කර, සාමාන්‍ය පරිශීලකයින්ට ප්‍රවේශය යථා තත්ත්වයට පත් කෙරිණි!
+                        </div>
+                    `;
+
+                    isUnderAttack = false;
+                    document.getElementById('ddosBtn').disabled = false;
+                    mitigateBtn.disabled = true;
+
+                    // Clear remaining packets
+                    document.querySelectorAll('.traffic-packet.attack').forEach(p => p.remove());
+                }
+
+                loadBar.style.width = load + '%';
+                loadPercent.textContent = Math.round(load) + '%';
+
+                if (load > 85) {
+                    server.className = 'server critical';
+                } else if (load > 70) {
+                    server.className = 'server warning';
+                } else {
+                    server.className = 'server healthy';
+                }
+            }, 100);
+        }
+
+        function resetDDoS() {
+            clearInterval(ddosInterval);
+            clearInterval(trafficInterval);
+            isUnderAttack = false;
+
+            const server = document.getElementById('mainServer');
+            server.className = 'server healthy';
+            server.querySelector('.server-status').textContent = 'Online';
+            server.querySelector('.server-icon').textContent = '🖥️';
+            document.getElementById('loadBar').style.width = '23%';
+            document.getElementById('loadPercent').textContent = '23%';
+
+            document.getElementById('websiteBody').className = 'website-body success';
+            document.getElementById('websiteBody').innerHTML = `
+                <div class="checkmark">✅</div>
+                <strong>Website is Online!</strong><br>
+                <span style="color: var(--text-muted); font-size: 0.85rem; margin-top: 8px;">
+                    සියලුම පරිශීලකයින්ට ප්‍රවේශය ලබා ගත හැක
+                </span>
+            `;
+
+            document.getElementById('uptimeMetric').textContent = '99.9%';
+            document.getElementById('responseMetric').textContent = '45ms';
+            document.getElementById('requestsMetric').textContent = '1,234';
+            document.getElementById('errorsMetric').textContent = '0.1%';
+            document.getElementById('errorsMetric').style.color = 'var(--accent-red)';
+
+            document.getElementById('ddosBtn').disabled = false;
+            document.getElementById('mitigateBtn').disabled = true;
+            document.getElementById('ddosStatus').innerHTML = '';
+
+            // Clear traffic packets
+            document.querySelectorAll('.traffic-packet').forEach(p => p.remove());
+            document.getElementById('trafficCount').innerHTML = 'Legit: 124/s';
+        }
+
+        // ==================== BACKUP SIMULATOR ====================
+        let isCrashed = false;
+        let backupInterval = null;
+
+        function simulateCrash() {
+            if (isCrashed) return;
+            isCrashed = true;
+
+            const primary = document.getElementById('primary');
+            const primaryBar = document.getElementById('primaryBar');
+            const status = document.getElementById('backupStatus');
+            const restoreBtn = document.getElementById('restoreBtn');
+
+            // Crash animation
+            primary.classList.remove('active');
+            primary.style.borderColor = 'var(--accent-red)';
+            primary.querySelector('.icon').textContent = '💀';
+            primary.querySelector('p').textContent = 'OFFLINE - Data Lost!';
+            primaryBar.style.width = '0%';
+            primaryBar.style.background = 'var(--accent-red)';
+
+            status.innerHTML = `
+                <div class="status-banner error">
+                    💥 Server crash විය! Primary server එක offline වී ඇත.
+                    <br><small>දැන් ඔබට backup එකකින් restore කළ හැක.</small>
+                </div>
+            `;
+
+            restoreBtn.disabled = false;
+            document.getElementById('backupBtn').disabled = true;
+        }
+
+        function startBackup() {
+            const backup1Bar = document.getElementById('backup1Bar');
+            const backup2Bar = document.getElementById('backup2Bar');
+            const backup1 = document.getElementById('backup1');
+            const backup2 = document.getElementById('backup2');
+            const status = document.getElementById('backupStatus');
+
+            // Animate backup 1
+            let progress1 = 0;
+            const interval1 = setInterval(() => {
+                progress1 += 5;
+                backup1Bar.style.width = progress1 + '%';
+                if (progress1 >= 100) {
+                    clearInterval(interval1);
+                    backup1.classList.add('active');
+                    backup1.querySelector('span').textContent = 'Last: Just now ✓';
+                }
+            }, 100);
+
+            // Animate backup 2 (slower)
+            setTimeout(() => {
+                let progress2 = 0;
+                const interval2 = setInterval(() => {
+                    progress2 += 3;
+                    backup2Bar.style.width = progress2 + '%';
+                    if (progress2 >= 100) {
+                        clearInterval(interval2);
+                        backup2.classList.add('active');
+                        backup2.querySelector('span').textContent = 'Last: Just now ✓';
+
+                        status.innerHTML = `
+                            <div class="status-banner success">
+                                ✅ Backup සාර්ථකව සම්පූර්ණ විය!
+                                දත්ත දැන් backup servers වල ආරක්ෂිතව තිබේ.
+                            </div>
+                        `;
+                    }
+                }, 150);
+            }, 500);
+        }
+
+        function startRestore() {
+            if (!isCrashed) return;
+
+            const primary = document.getElementById('primary');
+            const primaryBar = document.getElementById('primaryBar');
+            const status = document.getElementById('backupStatus');
+            const restoreBtn = document.getElementById('restoreBtn');
+
+            // Animate restore
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 4;
+                primaryBar.style.width = progress + '%';
+
+                if (progress >= 100) {
+                    clearInterval(interval);
+
+                    // Restore complete
+                    primary.classList.add('active');
+                    primary.style.borderColor = '';
+                    primary.querySelector('.icon').textContent = '🖥️';
+                    primary.querySelector('p').textContent = 'Live production data';
+                    primaryBar.style.background = '';
+
+                    status.innerHTML = `
+                        <div class="status-banner success">
+                            🎉 Restore සාර්ථකයි! Server එක නැවත online විය.
+                            <br><small>Backup එක නිසා දත්ත හා සේවාව නැවත ලබා ගත හැකි විය — Availability ආරක්ෂා විය!</small>
+                        </div>
+                    `;
+
+                    isCrashed = false;
+                    restoreBtn.disabled = true;
+                    document.getElementById('backupBtn').disabled = false;
+                }
+            }, 100);
+        }
+
+        // ==================== REDUNDANCY SIMULATOR ====================
+        let activeServer = 'A';
+        let crashed = false;
+
+        function crashServer() {
+            if (crashed) return;
+            crashed = true;
+
+            const serverA = document.getElementById('serverA');
+            const arrow1 = document.getElementById('arrow1');
+            const arrow2 = document.getElementById('arrow2');
+            const appBody = document.getElementById('appBody');
+            const activeServerEl = document.getElementById('activeServer');
+            const status = document.getElementById('redundancyStatus');
+            const crashBtn = document.getElementById('crashBtn');
+            const recoverBtn = document.getElementById('recoverBtn');
+
+            // Crash Server A
+            serverA.className = 'server down';
+            serverA.querySelector('.server-status').textContent = 'DOWN';
+            serverA.querySelector('.server-icon').textContent = '💀';
+            document.getElementById('barA').style.width = '0%';
+            document.getElementById('loadA').textContent = '0%';
+
+            // Activate failover animation
+            arrow1.classList.add('active');
+            setTimeout(() => {
+                arrow2.classList.add('active');
+
+                // Activate Server B
+                const serverB = document.getElementById('serverB');
+                serverB.className = 'server healthy';
+                serverB.querySelector('.server-status').textContent = 'Active';
+                document.getElementById('barB').style.width = '45%';
+                document.getElementById('loadB').textContent = '45%';
+
+                activeServer = 'B';
+                activeServerEl.textContent = 'Server B';
+
+                status.innerHTML = `
+                    <div class="status-banner info">
+                        🔄 Failover සාර්ථකයි! Server A crash වූ විට, Server B වහාම active විය.
+                        <br><small>පරිශීලකයින්ට කිසිදු downtime එකක් නොමැතිව සේවාව ලබා ගත හැක!</small>
+                    </div>
+                `;
+
+                crashBtn.disabled = true;
+                recoverBtn.disabled = false;
+            }, 800);
+        }
+
+        function recoverServer() {
+            const serverA = document.getElementById('serverA');
+            const arrow1 = document.getElementById('arrow1');
+            const arrow2 = document.getElementById('arrow2');
+            const status = document.getElementById('redundancyStatus');
+            const crashBtn = document.getElementById('crashBtn');
+            const recoverBtn = document.getElementById('recoverBtn');
+
+            // Recover Server A
+            serverA.className = 'server healthy';
+            serverA.querySelector('.server-status').textContent = 'Standby';
+            serverA.querySelector('.server-icon').textContent = '🖥️';
+            document.getElementById('barA').style.width = '10%';
+            document.getElementById('loadA').textContent = '10%';
+
+            // Reset arrows
+            arrow1.classList.remove('active');
+            arrow2.classList.remove('active');
+
+            status.innerHTML = `
+                <div class="status-banner success">
+                    🔧 Server A නැවත online විය! දැන් එය standby ලෙස ක්‍රියා කරයි.
+                    <br><small>Redundancy නිසා කිසිදු downtime එකක් සිදු නොවීය — Availability 100%!</small>
+                </div>
+            `;
+
+            crashed = false;
+            crashBtn.disabled = false;
+            recoverBtn.disabled = true;
+        }
+
+        function resetRedundancy() {
+            ['A', 'B', 'C'].forEach(letter => {
+                const server = document.getElementById('server' + letter);
+                server.className = 'server healthy';
+                server.querySelector('.server-status').textContent = letter === 'A' ? 'Active' : 'Standby';
+                server.querySelector('.server-icon').textContent = '🖥️';
+                document.getElementById('bar' + letter).style.width = letter === 'A' ? '35%' : '0%';
+                document.getElementById('load' + letter).textContent = letter === 'A' ? '35%' : '0%';
+            });
+
+            document.getElementById('arrow1').classList.remove('active');
+            document.getElementById('arrow2').classList.remove('active');
+            document.getElementById('activeServer').textContent = 'Server A';
+            document.getElementById('redundancyStatus').innerHTML = '';
+            document.getElementById('crashBtn').disabled = false;
+            document.getElementById('recoverBtn').disabled = true;
+
+            activeServer = 'A';
+            crashed = false;
+        }
+
+        // ==================== QUIZ ====================
+        const quizData = [
+            {
+                question: "Availability (පවතින බව) යනු කුමක්ද?",
+                options: [
+                    "දත්ත ආරක්ෂා කිරීම",
+                    "දත්ත නිවැරදිව තිබීම",
+                    "අවශ්‍ය විට පද්ධතිය/දත්ත ලබා ගත හැකි වීම",
+                    "පද්ධතියේ වේගය වැඩි කිරීම"
+                ],
+                correct: 2
+            },
+            {
+                question: "DDoS Attack එකකින් Availability එකට සිදුවන්නේ කුමක්ද?",
+                options: [
+                    "දත්ත මකා දමයි",
+                    "සර්වර් එක overload කර සේවාව නතර කරයි",
+                    "පරිශීලකයින්ගේ දත්ත සොරකම් කරයි",
+                    "පද්ධතියේ code වෙනස් කරයි"
+                ],
+                correct: 1
+            },
+            {
+                question: "Backup එකක් තිබීමෙන් Availability එකට ලැබෙන ප්‍රයෝජනය කුමක්ද?",
+                options: [
+                    "දත්ත වේගවත් වේ",
+                    "Server crash වුවද වහාම restore කළ හැක",
+                    "හැකර්වරුන්ට ප්‍රවේශ විය නොහැක",
+                    "දත්ත ප්‍රමාණය අඩු වේ"
+                ],
+                correct: 1
+            },
+            {
+                question: "Redundancy (අතිරික්තතාවය) යනු කුමක්ද?",
+                options: [
+                    "දත්ත compress කිරීම",
+                    "එකම සේවාව සඳහා servers කිහිපයක් තැබීම",
+                    "password එක වෙනස් කිරීම",
+                    "firewall එකක් යෙදීම"
+                ],
+                correct: 1
+            },
+            {
+                question: "3-2-1 backup rule එකේ '1' යනු කුමක්ද?",
+                options: [
+                    "පිටපත් 1ක් පමණක් තබන්න",
+                    "දිනකට 1 වරක් backup කරන්න",
+                    "පිටපත් 1ක් off-site (වෙනත් ස්ථානයක) තබන්න",
+                    "1TB storage එකක් භාවිතා කරන්න"
+                ],
+                correct: 2
+            },
+            {
+                question: "Load Balancer එකක් භාවිතා කිරීමෙන් කුමන ප්‍රයෝජනය ලැබේද?",
+                options: [
+                    "දත්ත encrypt වේ",
+                    "Traffic එක servers අතර සමානව බෙදා හරිනු ලැබේ",
+                    "පරිශීලකයින්ගේ identity ආරක්ෂා වේ",
+                    "දත්ත ප්‍රමාණය අඩු වේ"
+                ],
+                correct: 1
+            },
+            {
+                question: "SLA (Service Level Agreement) එකේ Availability 99.9% යනු වසරකට කොපමණ downtime එකක්ද?",
+                options: [
+                    "8.76 පැය",
+                    "52.6 මිනිත්තු",
+                    "8.76 පැය (≈ 9 පැය)",
+                    "3.65 දින"
+                ],
+                correct: 2
+            },
+            {
+                question: "Failover ක්‍රියාවලිය යනු කුමක්ද?",
+                options: [
+                    "දත්ත මකා දැමීම",
+                    "එක් සර්වර් එකක් ක්‍රියාවිරහිත වූ විට තවත් සර්වර් එකක් වහාම active වීම",
+                    "පරිශීලකයින්ට නව password එකක් ලබා දීම",
+                    "system update කිරීම"
+                ],
+                correct: 1
+            }
+        ];
+
+        let currentQuiz = 0;
+        let quizScore = 0;
+
+        function loadQuiz() {
+            const container = document.getElementById('quizContainer');
+            if (currentQuiz >= quizData.length) {
+                showQuizResult();
+                return;
+            }
+
+            const q = quizData[currentQuiz];
+            container.innerHTML = `
+                <div style="margin-bottom: 16px;">
+                    <span style="color: var(--text-muted); font-size: 0.85rem;">
+                        ප්‍රශ්නය ${currentQuiz + 1} / ${quizData.length}
+                    </span>
+                    <div class="strength-bar-bg" style="margin-top: 8px;">
+                        <div class="strength-bar" style="width: ${(currentQuiz / quizData.length) * 100}%; background: var(--accent-green);"></div>
+                    </div>
+                </div>
+                <h3 style="font-size: 1.15rem; margin-bottom: 20px; line-height: 1.6;">${q.question}</h3>
+                <div id="quizOptions">
+                    ${q.options.map((opt, i) => `
+                        <button class="quiz-option" onclick="selectAnswer(${i})" id="quiz-opt-${i}">
+                            <strong>${String.fromCharCode(65 + i)}.</strong> ${opt}
+                        </button>
+                    `).join('')}
+                </div>
+                <div id="quizFeedback" style="margin-top: 16px;"></div>
+                <button class="btn btn-primary hidden" id="quizNextBtn" onclick="nextQuiz()" style="margin-top: 16px;">
+                    ඊළඟ ප්‍රශ්නය →
+                </button>
+            `;
+        }
+
+        function selectAnswer(selected) {
+            const q = quizData[currentQuiz];
+            const options = document.querySelectorAll('.quiz-option');
+            options.forEach(opt => opt.disabled = true);
+
+            document.getElementById('quiz-opt-' + selected).classList.add(
+                selected === q.correct ? 'correct' : 'wrong'
+            );
+
+            if (selected === q.correct) {
+                quizScore++;
+                document.getElementById('quizFeedback').innerHTML = `
+                    <div class="status-msg success">✅ නිවැරදියි!</div>
+                `;
+            } else {
+                document.getElementById('quiz-opt-' + q.correct).classList.add('correct');
+                document.getElementById('quizFeedback').innerHTML = `
+                    <div class="status-msg error">❌ වැරදියි! නිවැරදි පිළිතුර: ${String.fromCharCode(65 + q.correct)}</div>
+                `;
+            }
+
+            document.getElementById('quizNextBtn').classList.remove('hidden');
+        }
+
+        function nextQuiz() {
+            currentQuiz++;
+            loadQuiz();
+        }
+
+        function showQuizResult() {
+            const container = document.getElementById('quizContainer');
+            container.classList.add('hidden');
+
+            const result = document.getElementById('quizResult');
+            result.classList.remove('hidden');
+
+            const percentage = Math.round((quizScore / quizData.length) * 100);
+            let emoji, message;
+
+            if (percentage >= 80) {
+                emoji = '🏆';
+                message = 'අතිශයින්ම හොඳයි! ඔබ Availability ගැන හොඳින් දන්නවා!';
+            } else if (percentage >= 60) {
+                emoji = '👍';
+                message = 'හොඳයි! තව ටිකක් ඉගෙන ගන්න!';
+            } else if (percentage >= 40) {
+                emoji = '📚';
+                message = 'මධ්‍යමයි. sandbox එක නැවත භාවිතා කර ඉගෙන ගන්න!';
+            } else {
+                emoji = '💪';
+                message = 'තව ඉගෙන ගන්න ඕනේ. sandbox එක භාවිතා කරන්න!';
+            }
+
+            result.innerHTML = `
+                <div class="score-display" style="text-align: center; padding: 30px; background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(59,130,246,0.05)); border: 2px solid var(--accent-green); border-radius: 16px;">
+                    <div style="font-size: 4rem;">${emoji}</div>
+                    <div style="font-size: 3rem; font-weight: 900; color: var(--accent-green); margin: 10px 0;">${quizScore} / ${quizData.length}</div>
+                    <div style="color: var(--text-secondary); font-size: 0.9rem;">${percentage}% — ${message}</div>
+                </div>
+                <button class="btn btn-purple" onclick="restartQuiz()" style="margin-top: 20px;">
+                    🔄 නැවත උත්සාහ කරන්න
+                </button>
+            `;
+        }
+
+        function restartQuiz() {
+            currentQuiz = 0;
+            quizScore = 0;
+            document.getElementById('quizContainer').classList.remove('hidden');
+            document.getElementById('quizResult').classList.add('hidden');
+            document.getElementById('quizResult').innerHTML = '';
+            loadQuiz();
+        }
+
+        // Initialize Quiz
+        loadQuiz();
+
+        // Helper: Status message for quiz
+        function showStatus(elementId, message, type) {
+            // Utility placeholder
+        }
+
+        // Initialize traffic animation for DDoS tab
+        function initTraffic() {
+            const container = document.getElementById('trafficContainer');
+            if (!container) return;
+
+            setInterval(() => {
+                if (!isUnderAttack) {
+                    const packet = document.createElement('div');
+                    packet.className = 'traffic-packet legit';
+                    packet.style.top = (Math.random() * 80 + 10) + '%';
+                    packet.style.left = '-20px';
+                    container.appendChild(packet);
+                    setTimeout(() => packet.remove(), 1500);
+                }
+            }, 400);
+        }
+        initTraffic();
+    </script>
+</body>
+</html>
