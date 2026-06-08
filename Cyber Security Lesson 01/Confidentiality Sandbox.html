@@ -1,0 +1,2060 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔐 BrainstormLK Confidentiality Sandbox</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap');
+
+        :root {
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #111827;
+            --bg-card: #1a2236;
+            --bg-card-hover: #1f2a42;
+            --accent-blue: #3b82f6;
+            --accent-cyan: #06b6d4;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-orange: #f59e0b;
+            --accent-purple: #8b5cf6;
+            --accent-pink: #ec4899;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border-color: #2a3550;
+            --glow-blue: rgba(59, 130, 246, 0.3);
+            --glow-green: rgba(16, 185, 129, 0.3);
+            --glow-red: rgba(239, 68, 68, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .bg-animation .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--accent-blue);
+            border-radius: 50%;
+            opacity: 0.2;
+            animation: floatParticle linear infinite;
+        }
+
+        @keyframes floatParticle {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.3; }
+            90% { opacity: 0.3; }
+            100% { transform: translateY(-10vh) rotate(720deg); opacity: 0; }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            margin-bottom: 30px;
+        }
+
+        .header .lock-icon {
+            font-size: 64px;
+            display: inline-block;
+            animation: lockBounce 2s ease-in-out infinite;
+            filter: drop-shadow(0 0 20px var(--glow-blue));
+        }
+
+        @keyframes lockBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 15px 0 10px;
+            letter-spacing: -1px;
+        }
+
+        .header .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        .header .subtitle span {
+            color: var(--accent-cyan);
+            font-weight: 600;
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            padding: 0 10px;
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            border: 2px solid var(--border-color);
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-btn:hover {
+            border-color: var(--accent-blue);
+            color: var(--text-primary);
+            background: var(--bg-card-hover);
+            transform: translateY(-2px);
+        }
+
+        .tab-btn.active {
+            border-color: var(--accent-blue);
+            background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(6,182,212,0.1));
+            color: var(--accent-blue);
+            box-shadow: 0 0 20px rgba(59,130,246,0.15);
+        }
+
+        .tab-btn .tab-emoji {
+            font-size: 1.2rem;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Card Styles */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(59,130,246,0.3);
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        /* Input Styles */
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="number"],
+        textarea {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        input:focus, textarea:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 15px rgba(59,130,246,0.15);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+            color: white;
+            box-shadow: 0 4px 15px rgba(59,130,246,0.3);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 6px 25px rgba(59,130,246,0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--accent-red), var(--accent-orange));
+            color: white;
+            box-shadow: 0 4px 15px rgba(239,68,68,0.3);
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 6px 25px rgba(239,68,68,0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
+            color: white;
+            box-shadow: 0 4px 15px rgba(16,185,129,0.3);
+        }
+
+        .btn-success:hover {
+            box-shadow: 0 6px 25px rgba(16,185,129,0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-purple {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            color: white;
+            box-shadow: 0 4px 15px rgba(139,92,246,0.3);
+        }
+
+        .btn-purple:hover {
+            box-shadow: 0 6px 25px rgba(139,92,246,0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
+
+        /* Output Display */
+        .output-box {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 16px;
+            margin-top: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            min-height: 50px;
+            word-break: break-all;
+            line-height: 1.8;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .output-box.encrypted {
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+            background: rgba(16,185,129,0.05);
+        }
+
+        .output-box.decrypted {
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+            background: rgba(59,130,246,0.05);
+        }
+
+        .output-box.breached {
+            border-color: var(--accent-red);
+            color: var(--accent-red);
+            background: rgba(239,68,68,0.05);
+            animation: breachPulse 0.5s ease;
+        }
+
+        @keyframes breachPulse {
+            0%, 100% { box-shadow: none; }
+            50% { box-shadow: 0 0 30px rgba(239,68,68,0.3); }
+        }
+
+        .output-box .label {
+            position: absolute;
+            top: -10px;
+            left: 12px;
+            background: var(--bg-secondary);
+            padding: 2px 10px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 4px;
+        }
+
+        .output-box.encrypted .label { color: var(--accent-green); }
+        .output-box.decrypted .label { color: var(--accent-blue); }
+        .output-box.breached .label { color: var(--accent-red); }
+
+        /* Slider */
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 16px 0;
+        }
+
+        .slider-container label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+
+        input[type="range"] {
+            flex: 1;
+            -webkit-appearance: none;
+            height: 6px;
+            background: var(--border-color);
+            border-radius: 3px;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(59,130,246,0.4);
+        }
+
+        .slider-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            color: var(--accent-blue);
+            min-width: 30px;
+            text-align: center;
+        }
+
+        /* Password Strength Meter */
+        .strength-meter {
+            margin: 16px 0;
+        }
+
+        .strength-bar-bg {
+            height: 8px;
+            background: var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .strength-bar {
+            height: 100%;
+            border-radius: 4px;
+            transition: all 0.5s ease;
+            width: 0%;
+        }
+
+        .strength-text {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-align: right;
+        }
+
+        .strength-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .strength-tag {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .strength-tag.pass {
+            background: rgba(16,185,129,0.15);
+            color: var(--accent-green);
+            border: 1px solid rgba(16,185,129,0.3);
+        }
+
+        .strength-tag.fail {
+            background: rgba(239,68,68,0.15);
+            color: var(--accent-red);
+            border: 1px solid rgba(239,68,68,0.3);
+        }
+
+        /* Brute Force Animation */
+        .brute-force-display {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 16px;
+            min-height: 120px;
+        }
+
+        .attempt-line {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            padding: 3px 0;
+            display: flex;
+            justify-content: space-between;
+            opacity: 0.7;
+        }
+
+        .attempt-line.current {
+            opacity: 1;
+            font-weight: 700;
+            color: var(--accent-orange);
+        }
+
+        .attempt-line.success {
+            opacity: 1;
+            color: var(--accent-red);
+            font-weight: 700;
+            animation: breachPulse 0.5s ease;
+        }
+
+        .attempt-line .attempt-num {
+            color: var(--text-muted);
+        }
+
+        /* MFA Section */
+        .mfa-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .mfa-step {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            transition: all 0.5s ease;
+        }
+
+        .mfa-step.completed {
+            border-color: var(--accent-green);
+            background: rgba(16,185,129,0.05);
+        }
+
+        .mfa-step.active-step {
+            border-color: var(--accent-blue);
+            background: rgba(59,130,246,0.05);
+            box-shadow: 0 0 20px rgba(59,130,246,0.1);
+        }
+
+        .mfa-step.failed {
+            border-color: var(--accent-red);
+            background: rgba(239,68,68,0.05);
+        }
+
+        .step-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            background: var(--border-color);
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .mfa-step.completed .step-icon {
+            background: rgba(16,185,129,0.2);
+        }
+
+        .mfa-step.active-step .step-icon {
+            background: rgba(59,130,246,0.2);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .mfa-step.failed .step-icon {
+            background: rgba(239,68,68,0.2);
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(59,130,246,0.4); }
+            50% { box-shadow: 0 0 0 10px rgba(59,130,246,0); }
+        }
+
+        .step-info {
+            flex: 1;
+        }
+
+        .step-info h4 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .step-info p {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .step-status {
+            font-size: 1.2rem;
+        }
+
+        /* OTP Input */
+        .otp-container {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .otp-input {
+            width: 52px;
+            height: 60px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .otp-input:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 15px rgba(59,130,246,0.2);
+            transform: scale(1.05);
+        }
+
+        .otp-input.filled {
+            border-color: var(--accent-green);
+            background: rgba(16,185,129,0.05);
+        }
+
+        /* Scenario Box */
+        .scenario-box {
+            background: linear-gradient(135deg, rgba(239,68,68,0.08), rgba(245,158,11,0.05));
+            border: 1px solid rgba(239,68,68,0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 16px 0;
+        }
+
+        .scenario-box h4 {
+            color: var(--accent-red);
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .scenario-box p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+
+        .scenario-box .fix {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(239,68,68,0.15);
+        }
+
+        .scenario-box .fix h4 {
+            color: var(--accent-green);
+        }
+
+        /* Info Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+
+        .info-item {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .info-item:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent-blue);
+        }
+
+        .info-item .icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .info-item h4 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .info-item p {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* Progress Indicator */
+        .progress-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            margin: 20px 0;
+        }
+
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .progress-dot.active {
+            background: var(--accent-blue);
+            box-shadow: 0 0 10px rgba(59,130,246,0.5);
+        }
+
+        .progress-dot.completed {
+            background: var(--accent-green);
+        }
+
+        .progress-line {
+            width: 40px;
+            height: 2px;
+            background: var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .progress-line.completed {
+            background: var(--accent-green);
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 16px 0;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.85rem;
+        }
+
+        .comparison-table th {
+            background: var(--bg-secondary);
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+
+        .comparison-table th:first-child { border-radius: 8px 0 0 0; }
+        .comparison-table th:last-child { border-radius: 0 8px 0 0; }
+
+        .comparison-table td:first-child {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Timer */
+        .timer-display {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--accent-orange);
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        /* Status Messages */
+        .status-msg {
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        .status-msg.success {
+            background: rgba(16,185,129,0.1);
+            border: 1px solid rgba(16,185,129,0.3);
+            color: var(--accent-green);
+        }
+
+        .status-msg.error {
+            background: rgba(239,68,68,0.1);
+            border: 1px solid rgba(239,68,68,0.3);
+            color: var(--accent-red);
+        }
+
+        .status-msg.info {
+            background: rgba(59,130,246,0.1);
+            border: 1px solid rgba(59,130,246,0.3);
+            color: var(--accent-blue);
+        }
+
+        .status-msg.warning {
+            background: rgba(245,158,11,0.1);
+            border: 1px solid rgba(245,158,11,0.3);
+            color: var(--accent-orange);
+        }
+
+        /* Visual Encryption Grid */
+        .encryption-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin: 16px 0;
+        }
+
+        .enc-char {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            font-weight: 700;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .enc-char.encrypting {
+            animation: charEncrypt 0.5s ease forwards;
+        }
+
+        @keyframes charEncrypt {
+            0% { background: var(--bg-secondary); color: var(--text-primary); }
+            50% { background: var(--accent-orange); color: white; transform: scale(1.2); }
+            100% { background: rgba(16,185,129,0.15); color: var(--accent-green); border-color: var(--accent-green); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.8rem; }
+            .tab-btn { padding: 10px 16px; font-size: 0.85rem; }
+            .card { padding: 20px; }
+            .otp-input { width: 44px; height: 52px; font-size: 1.2rem; }
+            .btn-group { flex-direction: column; }
+            .btn { width: 100%; justify-content: center; }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-blue); }
+
+        /* Hacker Terminal Effect */
+        .terminal {
+            background: #000;
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            line-height: 1.8;
+            color: #0f0;
+            margin-top: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .terminal .prompt {
+            color: #888;
+        }
+
+        .terminal .error-text {
+            color: #f44;
+        }
+
+        .terminal .success-text {
+            color: #0f0;
+        }
+
+        .terminal .warning-text {
+            color: #fa0;
+        }
+
+        /* Quiz Section */
+        .quiz-option {
+            display: block;
+            width: 100%;
+            padding: 14px 18px;
+            margin: 8px 0;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--accent-blue);
+            background: var(--bg-card-hover);
+        }
+
+        .quiz-option.correct {
+            border-color: var(--accent-green);
+            background: rgba(16,185,129,0.1);
+            color: var(--accent-green);
+        }
+
+        .quiz-option.wrong {
+            border-color: var(--accent-red);
+            background: rgba(239,68,68,0.1);
+            color: var(--accent-red);
+        }
+
+        .quiz-option:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        /* Score Display */
+        .score-display {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(59,130,246,0.05));
+            border: 2px solid var(--accent-green);
+            border-radius: 16px;
+            margin-top: 20px;
+        }
+
+        .score-display .score-num {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--accent-green);
+        }
+
+        .score-display .score-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <!-- Background Animation -->
+    <div class="bg-animation" id="bgAnimation"></div>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="lock-icon">🔐</div>
+            <h1>Confidentiality Sandbox</h1>
+            <p class="subtitle">
+                <span>රහස්‍යභාවය (Confidentiality)</span> ප්‍රායෝගිකව ඉගෙන ගන්න.<br>
+                Encryption, Password Security සහ MFA අත්විඳින්න.
+            </p>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-nav">
+            <button class="tab-btn active" onclick="switchTab('encryption')">
+                <span class="tab-emoji">🔑</span> Encryption Demo
+            </button>
+            <button class="tab-btn" onclick="switchTab('password')">
+                <span class="tab-emoji">🛡️</span> Password Breach
+            </button>
+            <button class="tab-btn" onclick="switchTab('mfa')">
+                <span class="tab-emoji">📱</span> MFA Flow
+            </button>
+            <button class="tab-btn" onclick="switchTab('quiz')">
+                <span class="tab-emoji">📝</span> Quiz Challenge
+            </button>
+        </div>
+
+        <!-- ==================== TAB 1: ENCRYPTION ==================== -->
+        <div class="tab-content active" id="tab-encryption">
+            <!-- Info Cards -->
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="icon">📝</div>
+                    <h4>Plain Text</h4>
+                    <p>සාමාන්‍ය කියවිය හැකි තොරතුරු</p>
+                </div>
+                <div class="info-item">
+                    <div class="icon">🔐</div>
+                    <h4>Encryption</h4>
+                    <p>තොරතුරු රහස් කේත බවට පත් කිරීම</p>
+                </div>
+                <div class="info-item">
+                    <div class="icon">🔓</div>
+                    <h4>Decryption</h4>
+                    <p>රහස් කේත නැවත සාමාන්‍ය පාඨ බවට පත් කිරීම</p>
+                </div>
+            </div>
+
+            <!-- Caesar Cipher Demo -->
+            <div class="card">
+                <div class="card-title">🔑 Caesar Cipher (Shift Cipher) Encryption</div>
+                <div class="card-desc">
+                    මෙය ලොව පැරණිතම encryption ක්‍රමයකි. ජුලියස් සීසර් විසින් භාවිතා කරන ලදී.
+                    එක් එක් අකුර alphabet එකේ නියමිත සංඛ්‍යාවකින් ඉදිරියට මාරු කරනු ලැබේ.
+                </div>
+
+                <div class="input-group">
+                    <label>📝 ඔබේ පණිවිඩය (Plain Text)</label>
+                    <input type="text" id="plainText" placeholder="මෙහි ඔබේ පණිවිඩය ලියන්න... උදා: Hello World" value="Hello World">
+                </div>
+
+                <div class="slider-container">
+                    <label>🔄 Shift Value (Key):</label>
+                    <input type="range" id="shiftSlider" min="1" max="25" value="3" oninput="updateShiftValue()">
+                    <span class="slider-value" id="shiftValue">3</span>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="encryptText()">🔐 Encrypt කරන්න</button>
+                    <button class="btn btn-success" onclick="decryptText()">🔓 Decrypt කරන්න</button>
+                    <button class="btn btn-danger" onclick="clearEncryption()">🗑️ Clear</button>
+                </div>
+
+                <!-- Encryption Visualization -->
+                <div class="output-box" id="encryptOutput">
+                    <span class="label">Encrypted Output (Cipher Text)</span>
+                    <div style="margin-top:8px; color: var(--text-muted);">Encrypt බලන්න ↑</div>
+                </div>
+
+                <div class="output-box" id="decryptOutput" style="margin-top:12px;">
+                    <span class="label">Decrypted Output</span>
+                    <div style="margin-top:8px; color: var(--text-muted);">Decrypt බලන්න ↑</div>
+                </div>
+
+                <!-- Visual Character Grid -->
+                <div style="margin-top: 20px;">
+                    <label style="font-size:0.85rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:8px;">🔍 Character-by-Character Encryption Visualization</label>
+                    <div class="encryption-grid" id="encGrid"></div>
+                </div>
+            </div>
+
+            <!-- Scenario -->
+            <div class="card">
+                <div class="card-title">💡 තේරුම් ගැනීම</div>
+                <div class="scenario-box">
+                    <h4>⚠️ Encryption නැතිනම් කුමක් සිදුවේද?</h4>
+                    <p>ඔබ HTTP (encryption නැති) හරහා password එකක් යවන විට, හැකර් කෙනෙකුට එය මැදින් අල්ලාගත හැක. HTTPS (encryption සහිත) භාවිතා කරන විට, දත්ත රහස් කේත බවට පත්ව යන නිසා හැකර්ට එය කියවිය නොහැක.</p>
+                    <div class="fix">
+                        <h4>✅ WhatsApp End-to-End Encryption</h4>
+                        <p>WhatsApp හි ඔබ යවන message එක encryption වී යන අතර, ලබන්නාට පමණක් එය decrypt කළ හැක. WhatsApp සමාගමට වුවද එය කියවිය නොහැක!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB 2: PASSWORD BREACH ==================== -->
+        <div class="tab-content" id="tab-password">
+            <div class="card">
+                <div class="card-title">🛡️ Password Strength Analyzer + Brute Force Simulator</div>
+                <div class="card-desc">
+                    ඔබේ password එක කොච්චර ශක්තිමත්ද කියලා බලන්න. ඊට පස්සේ brute force attack එකකින් එක බිඳ දමන ආකාරය බලන්න.
+                </div>
+
+                <div class="input-group">
+                    <label>🔑 Password එක ලියන්න</label>
+                    <input type="password" id="passwordInput" placeholder="ඔබේ password එක මෙහි ලියන්න..." oninput="analyzePassword()">
+                </div>
+
+                <!-- Strength Meter -->
+                <div class="strength-meter">
+                    <div class="strength-bar-bg">
+                        <div class="strength-bar" id="strengthBar"></div>
+                    </div>
+                    <div class="strength-text" id="strengthText">Password එක ලියන්න</div>
+                    <div class="strength-details" id="strengthDetails"></div>
+                </div>
+
+                <!-- Time to Crack -->
+                <div class="card" style="background: var(--bg-secondary); margin-top: 16px;">
+                    <div class="card-title" style="font-size: 1rem;">⏱️ Brute Force Attack එකකින් බිඳ දමන්න ගතවන කාලය</div>
+                    <div id="crackTime" style="font-size: 1.8rem; font-weight: 900; color: var(--accent-orange); margin-top: 10px;">—</div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;">
+                        * 10 billion attempts per second යැයි උපකල්පනය කර
+                    </div>
+                </div>
+
+                <!-- Brute Force Simulator -->
+                <div style="margin-top: 20px;">
+                    <h3 style="font-size: 1rem; margin-bottom: 10px;">🎯 Brute Force Attack Simulation</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 16px;">
+                        සරල password එකක් හැකර් කෙනෙකුට කොච්චර ඉක්මනින් හොයාගත හැකද බලන්න!
+                    </p>
+
+                    <div class="input-group">
+                        <label>🎯 Target Password (3-4 අකුරු පමණක් — ඉක්මන් demo එකක් සඳහා)</label>
+                        <input type="text" id="targetPassword" placeholder="උදා: cat, dog, 1234, ab12" maxlength="4">
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-danger" onclick="startBruteForce()">💀 Brute Force Attack ආරම්භ කරන්න</button>
+                        <button class="btn btn-primary" onclick="stopBruteForce()">⏹️ නවත්වන්න</button>
+                    </div>
+
+                    <div class="brute-force-display" id="bruteForceDisplay">
+                        <div style="color: var(--text-muted); text-align: center; padding: 30px;">
+                            Attack එකක් ආරම්භ කරන්න ↑
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Password Tips -->
+            <div class="card">
+                <div class="card-title">📋 ශක්තිමත් Password එකක් සෑදීමේ Tips</div>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="icon">📏</div>
+                        <h4>දිග වැඩි කරන්න</h4>
+                        <p>අවම වශයෙන් අකුරු 12ක් භාවිතා කරන්න</p>
+                    </div>
+                    <div class="info-item">
+                        <div class="icon">🔤</div>
+                        <h4>Characters මිශ්‍ර කරන්න</h4>
+                        <p>Upper, lower, numbers, symbols එකට යොදන්න</p>
+                    </div>
+                    <div class="info-item">
+                        <div class="icon">🚫</div>
+                        <h4>Personal Info භාවිතා නොකරන්න</h4>
+                        <p>උපන්දිනය, නම, phone number භාවිතා නොකරන්න</p>
+                    </div>
+                    <div class="info-item">
+                        <div class="icon">🔄</div>
+                        <h4>එකම Password භාවිතා නොකරන්න</h4>
+                        <p>සෑම ගිණුමකටම වෙනස් password එකක්</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB 3: MFA ==================== -->
+        <div class="tab-content" id="tab-mfa">
+            <div class="card">
+                <div class="card-title">📱 Multi-Factor Authentication (MFA) Simulator</div>
+                <div class="card-desc">
+                    MFA යනු ආරක්ෂාවේ අමතර පියවරකි. Password එක සොරකම් වුවද, දෙවන පියවර නිසා හැකර්ට ඇතුළු විය නොහැක.
+                </div>
+
+                <!-- Progress -->
+                <div class="progress-indicator" id="mfaProgress">
+                    <div class="progress-dot active" id="prog-1"></div>
+                    <div class="progress-line" id="pline-1"></div>
+                    <div class="progress-dot" id="prog-2"></div>
+                    <div class="progress-line" id="pline-2"></div>
+                    <div class="progress-dot" id="prog-3"></div>
+                </div>
+
+                <div class="mfa-steps" id="mfaSteps">
+                    <!-- Step 1: Username -->
+                    <div class="mfa-step active-step" id="step-1">
+                        <div class="step-icon">👤</div>
+                        <div class="step-info">
+                            <h4>Step 1: Username ඇතුළත් කරන්න</h4>
+                            <p>ඔබේ පරිශීලක නාමය</p>
+                        </div>
+                        <div class="step-status" id="step1-status">⏳</div>
+                    </div>
+
+                    <!-- Step 2: Password -->
+                    <div class="mfa-step" id="step-2">
+                        <div class="step-icon">🔑</div>
+                        <div class="step-info">
+                            <h4>Step 2: Password ඇතුළත් කරන්න</h4>
+                            <p>ඔබේ මුරපදය (උදා: admin123)</p>
+                        </div>
+                        <div class="step-status" id="step2-status">⏳</div>
+                    </div>
+
+                    <!-- Step 3: OTP -->
+                    <div class="mfa-step" id="step-3">
+                        <div class="step-icon">📲</div>
+                        <div class="step-info">
+                            <h4>Step 3: OTP Code ඇතුළත් කරන්න</h4>
+                            <p>ඔබේ ජංගම දුරකථනයට ලැබුණු 6-අංක කේතය</p>
+                        </div>
+                        <div class="step-status" id="step3-status">⏳</div>
+                    </div>
+                </div>
+
+                <!-- Step Inputs -->
+                <div id="mfaInputs">
+                    <!-- Step 1 Input -->
+                    <div id="input-step-1">
+                        <div class="input-group" style="margin-top: 20px;">
+                            <label>👤 Username</label>
+                            <input type="text" id="mfaUsername" placeholder="admin">
+                        </div>
+                        <button class="btn btn-primary" onclick="mfaNextStep(1)">ඊළඟ →</button>
+                    </div>
+
+                    <!-- Step 2 Input -->
+                    <div id="input-step-2" class="hidden">
+                        <div class="input-group" style="margin-top: 20px;">
+                            <label>🔑 Password</label>
+                            <input type="password" id="mfaPassword" placeholder="admin123">
+                        </div>
+                        <div class="btn-group">
+                            <button class="btn btn-primary" onclick="mfaNextStep(2)">ඊළඟ →</button>
+                            <button class="btn btn-danger" onclick="mfaFailStep(2)">❌ වැරදි Password එකක් දාන්න</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 Input -->
+                    <div id="input-step-3" class="hidden">
+                        <div class="scenario-box" style="margin-top: 16px;">
+                            <h4>📲 OTP Code ජනනය විය!</h4>
+                            <p>ඔබේ ජංගම දුරකථනයට පහත OTP code එක ලැබී ඇත:</p>
+                            <div class="output-box encrypted" style="text-align:center; font-size: 1.5rem; margin-top: 10px; padding: 12px;">
+                                <span class="label">OTP CODE</span>
+                                <div style="margin-top: 12px;" id="generatedOTP">------</div>
+                            </div>
+                            <p style="margin-top: 8px; font-size: 0.8rem;">⏰ මෙම code එක තත්පර 60කින් කල් ඉකුත් වේ!</p>
+                            <div class="timer-display" id="otpTimer">60</div>
+                        </div>
+
+                        <div style="margin-top: 16px;">
+                            <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); display:block; margin-bottom: 8px;">OTP Code ඇතුළත් කරන්න:</label>
+                            <div class="otp-container" id="otpContainer">
+                                <input type="text" class="otp-input" maxlength="1" oninput="otpInputHandler(this, 0)" onkeydown="otpKeyHandler(event, 0)">
+                                <input type="text" class="otp-input" maxlength="1" oninput="otpInputHandler(this, 1)" onkeydown="otpKeyHandler(event, 1)">
+                                <input type="text" class="otp-input" maxlength="1" oninput="otpInputHandler(this, 2)" onkeydown="otpKeyHandler(event, 2)">
+                                <input type="text" class="otp-input" maxlength="1" oninput="otpInputHandler(this, 3)" onkeydown="otpKeyHandler(event, 3)">
+                                <input type="text" class="otp-input" maxlength="1" oninput="otpInputHandler(this, 4)" onkeydown="otpKeyHandler(event, 4)">
+                                <input type="text" class="otp-input" maxlength="1" oninput="otpInputHandler(this, 5)" onkeydown="otpKeyHandler(event, 5)">
+                            </div>
+                        </div>
+
+                        <div class="btn-group">
+                            <button class="btn btn-success" onclick="verifyOTP()">✅ Verify OTP</button>
+                            <button class="btn btn-danger" onclick="failOTP()">❌ වැරදි OTP එකක් දාන්න</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Result -->
+                <div id="mfaResult" class="hidden"></div>
+
+                <!-- Reset -->
+                <button class="btn btn-purple" onclick="resetMFA()" style="margin-top: 20px;" id="mfaResetBtn">🔄 නැවත ආරම්භ කරන්න</button>
+            </div>
+
+            <!-- Why MFA -->
+            <div class="card">
+                <div class="card-title">🤔 ඇයි MFA අවශ්‍යද?</div>
+                <table class="comparison-table">
+                    <tr>
+                        <th>තත්ත්වය</th>
+                        <th>Password Only</th>
+                        <th>Password + MFA</th>
+                    </tr>
+                    <tr>
+                        <td>Password සොරකම් විය</td>
+                        <td style="color: var(--accent-red);">❌ හැකර් ඇතුළු වේ</td>
+                        <td style="color: var(--accent-green);">✅ හැකර්ට ඇතුළු විය නොහැක</td>
+                    </tr>
+                    <tr>
+                        <td>Phishing Attack</td>
+                        <td style="color: var(--accent-red);">❌ ගිණුම අහිමි වේ</td>
+                        <td style="color: var(--accent-green);">✅ OTP නිසා ආරක්ෂිතයි</td>
+                    </tr>
+                    <tr>
+                        <td>Public WiFi</td>
+                        <td style="color: var(--accent-red);">❌ අවදානම්</td>
+                        <td style="color: var(--accent-green);">✅ අමතර ආරක්ෂාව</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- ==================== TAB 4: QUIZ ==================== -->
+        <div class="tab-content" id="tab-quiz">
+            <div class="card">
+                <div class="card-title">📝 Confidentiality Quiz Challenge</div>
+                <div class="card-desc">ඔබ Confidentiality ගැන කොච්චර දැනගෙනද කියලා පරීක්ෂා කරන්න!</div>
+
+                <div id="quizContainer"></div>
+                <div id="quizResult" class="hidden"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== BACKGROUND PARTICLES ====================
+        function createParticles() {
+            const bg = document.getElementById('bgAnimation');
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 15 + 10) + 's';
+                particle.style.animationDelay = (Math.random() * 10) + 's';
+                particle.style.width = (Math.random() * 3 + 1) + 'px';
+                particle.style.height = particle.style.width;
+                bg.appendChild(particle);
+            }
+        }
+        createParticles();
+
+        // ==================== TAB SWITCHING ====================
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tab-' + tabName).classList.add('active');
+            event.target.closest('.tab-btn').classList.add('active');
+        }
+
+        // ==================== ENCRYPTION ====================
+        function updateShiftValue() {
+            document.getElementById('shiftValue').textContent = document.getElementById('shiftSlider').value;
+        }
+
+        function caesarCipher(text, shift, encrypt = true) {
+            let result = '';
+            const actualShift = encrypt ? shift : (26 - shift);
+            for (let i = 0; i < text.length; i++) {
+                let char = text[i];
+                if (char.match(/[a-z]/i)) {
+                    const base = char === char.toUpperCase() ? 65 : 97;
+                    char = String.fromCharCode(((char.charCodeAt(0) - base + actualShift) % 26) + base);
+                }
+                result += char;
+            }
+            return result;
+        }
+
+        function encryptText() {
+            const plain = document.getElementById('plainText').value;
+            if (!plain) {
+                showStatus('encryptOutput', '⚠️ පණිවිඩයක් ලියන්න!', 'error');
+                return;
+            }
+            const shift = parseInt(document.getElementById('shiftSlider').value);
+            const encrypted = caesarCipher(plain, shift, true);
+
+            const output = document.getElementById('encryptOutput');
+            output.className = 'output-box encrypted';
+            output.innerHTML = `<span class="label">Encrypted (Shift ${shift})</span><div style="margin-top:8px;">${encrypted}</div>`;
+
+            // Visualize character by character
+            const grid = document.getElementById('encGrid');
+            grid.innerHTML = '';
+            plain.split('').forEach((char, i) => {
+                const div = document.createElement('div');
+                div.className = 'enc-char';
+                div.textContent = char;
+                grid.appendChild(div);
+
+                setTimeout(() => {
+                    div.classList.add('encrypting');
+                    div.textContent = encrypted[i] !== ' ' ? encrypted[i] : char;
+                }, i * 150);
+            });
+
+            showStatus('decryptOutput', '', 'info');
+            document.getElementById('decryptOutput').innerHTML = `<span class="label">Decrypted Output</span><div style="margin-top:8px; color: var(--text-muted);">Decrypt බලන්න ↑</div>`;
+            document.getElementById('decryptOutput').className = 'output-box';
+        }
+
+        function decryptText() {
+            const encrypted = document.querySelector('#encryptOutput div')?.textContent;
+            if (!encrypted || encrypted.includes('Encrypt බලන්න')) {
+                showStatus('decryptOutput', '⚠️ පළමුව encrypt කරන්න!', 'warning');
+                return;
+            }
+            const shift = parseInt(document.getElementById('shiftSlider').value);
+            const decrypted = caesarCipher(encrypted, shift, false);
+
+            const output = document.getElementById('decryptOutput');
+            output.className = 'output-box decrypted';
+            output.innerHTML = `<span class="label">Decrypted Output</span><div style="margin-top:8px;">${decrypted}</div>`;
+        }
+
+        function clearEncryption() {
+            document.getElementById('plainText').value = '';
+            document.getElementById('encryptOutput').className = 'output-box';
+            document.getElementById('encryptOutput').innerHTML = `<span class="label">Encrypted Output</span><div style="margin-top:8px; color: var(--text-muted);">Encrypt බලන්න ↑</div>`;
+            document.getElementById('decryptOutput').className = 'output-box';
+            document.getElementById('decryptOutput').innerHTML = `<span class="label">Decrypted Output</span><div style="margin-top:8px; color: var(--text-muted);">Decrypt බලන්න ↑</div>`;
+            document.getElementById('encGrid').innerHTML = '';
+        }
+
+        // ==================== PASSWORD ANALYZER ====================
+        function analyzePassword() {
+            const password = document.getElementById('passwordInput').value;
+            const bar = document.getElementById('strengthBar');
+            const text = document.getElementById('strengthText');
+            const details = document.getElementById('strengthDetails');
+
+            if (!password) {
+                bar.style.width = '0%';
+                bar.style.background = 'transparent';
+                text.textContent = 'Password එක ලියන්න';
+                text.style.color = 'var(--text-muted)';
+                details.innerHTML = '';
+                document.getElementById('crackTime').textContent = '—';
+                return;
+            }
+
+            let score = 0;
+            let checks = [];
+
+            if (password.length >= 8) { score += 20; checks.push({ pass: true, text: '8+ අකුරු ✓' }); }
+            else checks.push({ pass: false, text: '8+ අකුරු ✗' });
+
+            if (password.length >= 12) { score += 10; checks.push({ pass: true, text: '12+ අකුරු ✓' }); }
+            else checks.push({ pass: false, text: '12+ අකුරු ✗' });
+
+            if (/[a-z]/.test(password)) { score += 15; checks.push({ pass: true, text: 'Lowercase ✓' }); }
+            else checks.push({ pass: false, text: 'Lowercase ✗' });
+
+            if (/[A-Z]/.test(password)) { score += 15; checks.push({ pass: true, text: 'Uppercase ✓' }); }
+            else checks.push({ pass: false, text: 'Uppercase ✗' });
+
+            if (/[0-9]/.test(password)) { score += 15; checks.push({ pass: true, text: 'Numbers ✓' }); }
+            else checks.push({ pass: false, text: 'Numbers ✗' });
+
+            if (/[^a-zA-Z0-9]/.test(password)) { score += 25; checks.push({ pass: true, text: 'Symbols ✓' }); }
+            else checks.push({ pass: false, text: 'Symbols ✗' });
+
+            // Update bar
+            bar.style.width = score + '%';
+            if (score < 30) {
+                bar.style.background = 'var(--accent-red)';
+                text.textContent = '🔴 ඉතා දුර්වලයි';
+                text.style.color = 'var(--accent-red)';
+            } else if (score < 60) {
+                bar.style.background = 'var(--accent-orange)';
+                text.textContent = '🟠 දුර්වලයි';
+                text.style.color = 'var(--accent-orange)';
+            } else if (score < 80) {
+                bar.style.background = 'var(--accent-blue)';
+                text.textContent = '🔵 මධ්‍යමයි';
+                text.style.color = 'var(--accent-blue)';
+            } else {
+                bar.style.background = 'var(--accent-green)';
+                text.textContent = '🟢 ශක්තිමත්!';
+                text.style.color = 'var(--accent-green)';
+            }
+
+            details.innerHTML = checks.map(c =>
+                `<span class="strength-tag ${c.pass ? 'pass' : 'fail'}">${c.text}</span>`
+            ).join('');
+
+            // Calculate crack time
+            let charsetSize = 0;
+            if (/[a-z]/.test(password)) charsetSize += 26;
+            if (/[A-Z]/.test(password)) charsetSize += 26;
+            if (/[0-9]/.test(password)) charsetSize += 10;
+            if (/[^a-zA-Z0-9]/.test(password)) charsetSize += 33;
+
+            if (charsetSize === 0) charsetSize = 26;
+
+            const totalCombinations = Math.pow(charsetSize, password.length);
+            const attemptsPerSecond = 10e9; // 10 billion
+            const seconds = totalCombinations / attemptsPerSecond;
+
+            let timeText = '';
+            if (seconds < 1) timeText = '⚡ ක්ෂණිකව!';
+            else if (seconds < 60) timeText = Math.ceil(seconds) + ' තත්පර';
+            else if (seconds < 3600) timeText = Math.ceil(seconds / 60) + ' මිනිත්තු';
+            else if (seconds < 86400) timeText = Math.ceil(seconds / 3600) + ' පැය';
+            else if (seconds < 31536000) timeText = Math.ceil(seconds / 86400) + ' දින';
+            else if (seconds < 31536000 * 1000) timeText = Math.ceil(seconds / 31536000) + ' වසර';
+            else if (seconds < 31536000 * 1e6) timeText = Math.ceil(seconds / 31536000 / 1000) + ' දහස් වසර';
+            else if (seconds < 31536000 * 1e9) timeText = Math.ceil(seconds / 31536000 / 1e6) + ' මිලියන වසර';
+            else timeText = '♾️ ගණන් කළ නොහැකි තරම් දිගුයි!';
+
+            document.getElementById('crackTime').textContent = timeText;
+            document.getElementById('crackTime').style.color =
+                seconds < 60 ? 'var(--accent-red)' :
+                seconds < 3600 ? 'var(--accent-orange)' :
+                seconds < 86400 * 365 ? 'var(--accent-blue)' :
+                'var(--accent-green)';
+        }
+
+        // ==================== BRUTE FORCE SIMULATOR ====================
+        let bruteForceInterval = null;
+
+        function startBruteForce() {
+            const target = document.getElementById('targetPassword').value;
+            if (!target || target.length < 2 || target.length > 4) {
+                alert('කරුණාකර අකුරු 2-4ක් අතර password එකක් ලියන්න!');
+                return;
+            }
+
+            const display = document.getElementById('bruteForceDisplay');
+            display.innerHTML = '';
+
+            const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+            let attempts = 0;
+            let found = false;
+            let currentAttempt = '';
+
+            function generateAttempt(len) {
+                let result = '';
+                for (let i = 0; i < len; i++) {
+                    result += chars[Math.floor(Math.random() * chars.length)];
+                }
+                return result;
+            }
+
+            // Use systematic approach for demo
+            const targetLen = target.length;
+            let attempts_list = [];
+            let systematicIndex = 0;
+
+            // Generate all possible combinations systematically (limited for demo)
+            function generateAllCombinations(length, chars, current) {
+                if (current.length === length) {
+                    attempts_list.push(current);
+                    return;
+                }
+                for (let i = 0; i < chars.length; i++) {
+                    if (attempts_list.length > 5000) return; // Limit for performance
+                    generateAllCombinations(length, chars, current + chars[i]);
+                }
+            }
+
+            generateAllCombinations(targetLen, chars, '');
+
+            // Shuffle to simulate random attempts
+            attempts_list = shuffleArray(attempts_list);
+
+            // Find the target in the list
+            const targetIndex = attempts_list.indexOf(target);
+            if (targetIndex === -1) {
+                display.innerHTML = '<div style="color: var(--text-muted); text-align:center; padding: 20px;">Password එක list එකේ නැත!</div>';
+                return;
+            }
+
+            // Show attempts
+            const maxShow = Math.min(targetIndex + 5, 100); // Show max 100 attempts
+
+            let i = 0;
+            display.innerHTML = '';
+
+            bruteForceInterval = setInterval(() => {
+                if (i >= maxShow || i > attempts_list.length - 1) {
+                    clearInterval(bruteForceInterval);
+                    return;
+                }
+
+                const attempt = attempts_list[i];
+                const isTarget = attempt === target;
+                const isRecent = i >= targetIndex - 3;
+
+                const line = document.createElement('div');
+                line.className = 'attempt-line' +
+                    (isTarget ? ' success' : isRecent ? ' current' : '');
+
+                line.innerHTML = `
+                    <span class="attempt-num">#${(i + 1).toLocaleString()}</span>
+                    <span>${attempt}</span>
+                    <span>${isTarget ? '✅ MATCH!' : '❌'}</span>
+                `;
+
+                display.appendChild(line);
+                display.scrollTop = display.scrollHeight;
+
+                if (isTarget) {
+                    found = true;
+                    const timeEstimate = (i / 10000000).toFixed(4);
+                    const summary = document.createElement('div');
+                    summary.style.cssText = 'margin-top: 16px; padding: 12px; background: rgba(239,68,68,0.1); border-radius: 8px; text-align: center;';
+                    summary.innerHTML = `
+                        <div style="color: var(--accent-red); font-weight: 800; font-size: 1.1rem;">
+                            🔓 Password එක හමු විය!
+                        </div>
+                        <div style="color: var(--text-secondary); margin-top: 6px; font-size: 0.85rem;">
+                            මුළු උත්සාහ: <strong style="color: var(--accent-orange);">${(i + 1).toLocaleString()}</strong> |
+                            සරල password එකක් භාවිතා කිරීම මෙතරම් භයානකයි!
+                        </div>
+                    `;
+                    display.appendChild(summary);
+                    clearInterval(bruteForceInterval);
+                }
+
+                i++;
+            }, 50); // Speed of attempts
+        }
+
+        function shuffleArray(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function stopBruteForce() {
+            if (bruteForceInterval) {
+                clearInterval(bruteForceInterval);
+                bruteForceInterval = null;
+            }
+        }
+
+        // ==================== MFA SIMULATOR ====================
+        let currentMFAStep = 1;
+        let generatedOTPCode = '';
+        let otpTimerInterval = null;
+
+        function mfaNextStep(step) {
+            if (step === 1) {
+                const username = document.getElementById('mfaUsername').value;
+                if (!username) {
+                    alert('Username එකක් ලියන්න!');
+                    return;
+                }
+
+                // Complete step 1
+                document.getElementById('step-1').classList.remove('active-step');
+                document.getElementById('step-1').classList.add('completed');
+                document.getElementById('step1-status').textContent = '✅';
+                document.getElementById('prog-1').classList.remove('active');
+                document.getElementById('prog-1').classList.add('completed');
+                document.getElementById('pline-1').classList.add('completed');
+
+                // Activate step 2
+                document.getElementById('step-2').classList.add('active-step');
+                document.getElementById('prog-2').classList.add('active');
+
+                // Show step 2 input
+                document.getElementById('input-step-1').classList.add('hidden');
+                document.getElementById('input-step-2').classList.remove('hidden');
+
+                currentMFAStep = 2;
+            } else if (step === 2) {
+                const password = document.getElementById('mfaPassword').value;
+                if (!password) {
+                    alert('Password එකක් ලියන්න!');
+                    return;
+                }
+                if (password !== 'admin123') {
+                    mfaFailStep(2);
+                    return;
+                }
+
+                // Complete step 2
+                document.getElementById('step-2').classList.remove('active-step');
+                document.getElementById('step-2').classList.add('completed');
+                document.getElementById('step2-status').textContent = '✅';
+                document.getElementById('prog-2').classList.remove('active');
+                document.getElementById('prog-2').classList.add('completed');
+                document.getElementById('pline-2').classList.add('completed');
+
+                // Activate step 3
+                document.getElementById('step-3').classList.add('active-step');
+                document.getElementById('prog-3').classList.add('active');
+
+                // Generate OTP
+                generatedOTPCode = String(Math.floor(100000 + Math.random() * 900000));
+                document.getElementById('generatedOTP').textContent = generatedOTPCode;
+
+                // Start OTP timer
+                startOTPTimer();
+
+                // Show step 3 input
+                document.getElementById('input-step-2').classList.add('hidden');
+                document.getElementById('input-step-3').classList.remove('hidden');
+
+                currentMFAStep = 3;
+            }
+        }
+
+        function mfaFailStep(step) {
+            document.getElementById('step-' + step).classList.remove('active-step');
+            document.getElementById('step-' + step).classList.add('failed');
+            document.getElementById('step' + step + '-status').textContent = '❌';
+
+            const result = document.getElementById('mfaResult');
+            result.classList.remove('hidden');
+            result.innerHTML = `
+                <div class="status-msg error">
+                    🔒 ප්‍රවේශය ප්‍රතික්ෂේප විය! වැරදි credentials නිසා හැකර්ට ඇතුළු විය නොහැක.
+                    <br><small style="margin-top:4px; display:block;">මෙය Confidentiality ආරක්ෂා කරයි — අනවසර පුද්ගලයන්ට ප්‍රවේශය අවහිරයි.</small>
+                </div>
+            `;
+        }
+
+        function startOTPTimer() {
+            let timeLeft = 60;
+            document.getElementById('otpTimer').textContent = timeLeft;
+
+            if (otpTimerInterval) clearInterval(otpTimerInterval);
+
+            otpTimerInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById('otpTimer').textContent = timeLeft;
+
+                if (timeLeft <= 10) {
+                    document.getElementById('otpTimer').style.color = 'var(--accent-red)';
+                }
+
+                if (timeLeft <= 0) {
+                    clearInterval(otpTimerInterval);
+                    failOTP();
+                }
+            }, 1000);
+        }
+
+        function otpInputHandler(input, index) {
+            input.value = input.value.replace(/[^0-9]/g, '');
+            if (input.value) {
+                input.classList.add('filled');
+                const inputs = document.querySelectorAll('.otp-input');
+                if (index < 5) {
+                    inputs[index + 1].focus();
+                }
+            } else {
+                input.classList.remove('filled');
+            }
+        }
+
+        function otpKeyHandler(event, index) {
+            if (event.key === 'Backspace' && !event.target.value) {
+                const inputs = document.querySelectorAll('.otp-input');
+                if (index > 0) {
+                    inputs[index - 1].focus();
+                    inputs[index - 1].value = '';
+                    inputs[index - 1].classList.remove('filled');
+                }
+            }
+        }
+
+        function verifyOTP() {
+            const inputs = document.querySelectorAll('.otp-input');
+            let enteredOTP = '';
+            inputs.forEach(input => enteredOTP += input.value);
+
+            if (enteredOTP.length < 6) {
+                alert('OTP code එක සම්පූර්ණයෙන් ලියන්න!');
+                return;
+            }
+
+            clearInterval(otpTimerInterval);
+
+            if (enteredOTP === generatedOTPCode) {
+                // Success!
+                document.getElementById('step-3').classList.remove('active-step');
+                document.getElementById('step-3').classList.add('completed');
+                document.getElementById('step3-status').textContent = '✅';
+                document.getElementById('prog-3').classList.remove('active');
+                document.getElementById('prog-3').classList.add('completed');
+
+                document.getElementById('input-step-3').classList.add('hidden');
+
+                const result = document.getElementById('mfaResult');
+                result.classList.remove('hidden');
+                result.innerHTML = `
+                    <div class="status-msg success" style="font-size: 1rem; padding: 20px;">
+                        🎉 සාර්ථකයි! ඔබ MFA භාවිතා කර සාර්ථකව ඇතුළු විය!
+                        <br><br>
+                        <span style="font-size: 0.85rem;">
+                            Password එක + OTP = ද්විත්ව ආරක්ෂාව!<br>
+                            හැකර් කෙනෙකුට password එක සොරකම් වුවද, OTP නොමැතිව ඇතුළු විය නොහැක.
+                            <br><strong style="color: var(--accent-green);">මෙය Confidentiality ආරක්ෂා කරයි!</strong>
+                        </span>
+                    </div>
+                `;
+            } else {
+                failOTP();
+            }
+        }
+
+        function failOTP() {
+            clearInterval(otpTimerInterval);
+            document.getElementById('step-3').classList.remove('active-step');
+            document.getElementById('step-3').classList.add('failed');
+            document.getElementById('step3-status').textContent = '❌';
+
+            document.getElementById('input-step-3').classList.add('hidden');
+
+            const result = document.getElementById('mfaResult');
+            result.classList.remove('hidden');
+            result.innerHTML = `
+                <div class="status-msg error" style="font-size: 1rem; padding: 20px;">
+                    🔒 ප්‍රවේශය ප්‍රතික්ෂේප විය! වැරදි OTP code එක නිසා හැකර්ට ඇතුළු විය නොහැක.
+                    <br><br>
+                    <span style="font-size: 0.85rem;">
+                        හැකර්ට password එක තිබුණත්, OTP code එක නැති නිසා ඔහුට ඇතුළු විය නොහැක!
+                        <br><strong style="color: var(--accent-green);">MFA Confidentiality ආරක්ෂා කරයි!</strong>
+                    </span>
+                </div>
+            `;
+        }
+
+        function resetMFA() {
+            currentMFAStep = 1;
+            clearInterval(otpTimerInterval);
+
+            // Reset steps
+            [1, 2, 3].forEach(i => {
+                document.getElementById('step-' + i).className = 'mfa-step';
+                document.getElementById('step' + i + '-status').textContent = '⏳';
+            });
+            document.getElementById('step-1').classList.add('active-step');
+
+            // Reset progress
+            [1, 2, 3].forEach(i => {
+                document.getElementById('prog-' + i).className = 'progress-dot';
+            });
+            document.getElementById('prog-1').classList.add('active');
+            ['pline-1', 'pline-2'].forEach(id => {
+                document.getElementById(id).className = 'progress-line';
+            });
+
+            // Reset inputs
+            document.getElementById('input-step-1').classList.remove('hidden');
+            document.getElementById('input-step-2').classList.add('hidden');
+            document.getElementById('input-step-3').classList.add('hidden');
+
+            document.getElementById('mfaUsername').value = '';
+            document.getElementById('mfaPassword').value = '';
+
+            // Reset OTP inputs
+            document.querySelectorAll('.otp-input').forEach(input => {
+                input.value = '';
+                input.classList.remove('filled');
+            });
+
+            document.getElementById('otpTimer').style.color = 'var(--accent-orange)';
+
+            // Hide result
+            document.getElementById('mfaResult').classList.add('hidden');
+            document.getElementById('mfaResult').innerHTML = '';
+        }
+
+        // ==================== QUIZ ====================
+        const quizData = [
+            {
+                question: "Confidentiality යනු කුමක්ද?",
+                options: [
+                    "දත්ත නිවැරදිව තිබීම",
+                    "අවසර ඇති අයට පමණක් දත්ත බැලීමට ඉඩ දීම",
+                    "දත්ත backup කිරීම",
+                    "සිස්ටම් එක වේගවත් කිරීම"
+                ],
+                correct: 1
+            },
+            {
+                question: "Encryption යනු කුමක්ද?",
+                options: [
+                    "දත්ත මකා දැමීම",
+                    "දත්ත compress කිරීම",
+                    "දත්ත කියවිය නොහැකි රහස් කේත බවට පත් කිරීම",
+                    "දත්ත copy කිරීම"
+                ],
+                correct: 2
+            },
+            {
+                question: "WhatsApp messages ආරක්ෂා වන්නේ කෙසේද?",
+                options: [
+                    "Firewall එකක් මගින්",
+                    "End-to-End Encryption මගින්",
+                    "Antivirus මගින්",
+                    "Strong password එකක් මගින් පමණි"
+                ],
+                correct: 1
+            },
+            {
+                question: "MFA (Multi-Factor Authentication) හි ප්‍රධාන වාසිය කුමක්ද?",
+                options: [
+                    "Password එක අමතක වුවද ගිණුමට යා හැක",
+                    "Password එක සොරකම් වුවද අමතර ආරක්ෂක පියවරක් ඇත",
+                    "සිස්ටම් එක වේගවත් වේ",
+                    "දත්ත ප්‍රමාණය අඩු වේ"
+                ],
+                correct: 1
+            },
+            {
+                question: "Caesar Cipher එකක shift value 3 නම්, 'A' අකුර කුමක් බවට පත්වේද?",
+                options: [
+                    "B",
+                    "C",
+                    "D",
+                    "E"
+                ],
+                correct: 2
+            },
+            {
+                question: "පහත password වලින් වඩාත් ශක්තිමත් එක කුමක්ද?",
+                options: [
+                    "password123",
+                    "12345678",
+                    "X#9kL!mQ2$vZ",
+                    "myname2024"
+                ],
+                correct: 2
+            },
+            {
+                question: "HTTP සහ HTTPS අතර ප්‍රධාන වෙනස කුමක්ද?",
+                options: [
+                    "HTTPS වේගවත්ය",
+                    "HTTPS encryption භාවිතා කරයි, HTTP නොකරයි",
+                    "HTTPS නොමිලේ ලැබේ",
+                    "HTTP වඩා ආරක්ෂිතයි"
+                ],
+                correct: 1
+            },
+            {
+                question: "Brute Force Attack එකක් යනු කුමක්ද?",
+                options: [
+                    "සිස්ටම් එකට virus එකක් දැමීම",
+                    "සෑම possible password combination එකක්ම උත්සාහ කිරීම",
+                    "Email phishing කිරීම",
+                    "WiFi network එක hack කිරීම"
+                ],
+                correct: 1
+            }
+        ];
+
+        let currentQuiz = 0;
+        let quizScore = 0;
+
+        function loadQuiz() {
+            const container = document.getElementById('quizContainer');
+            if (currentQuiz >= quizData.length) {
+                showQuizResult();
+                return;
+            }
+
+            const q = quizData[currentQuiz];
+            container.innerHTML = `
+                <div style="margin-bottom: 16px;">
+                    <span style="color: var(--text-muted); font-size: 0.85rem;">
+                        ප්‍රශ්නය ${currentQuiz + 1} / ${quizData.length}
+                    </span>
+                    <div class="strength-bar-bg" style="margin-top: 8px;">
+                        <div class="strength-bar" style="width: ${(currentQuiz / quizData.length) * 100}%; background: var(--accent-blue);"></div>
+                    </div>
+                </div>
+                <h3 style="font-size: 1.15rem; margin-bottom: 20px; line-height: 1.6;">${q.question}</h3>
+                <div id="quizOptions">
+                    ${q.options.map((opt, i) => `
+                        <button class="quiz-option" onclick="selectAnswer(${i})" id="quiz-opt-${i}">
+                            <strong>${String.fromCharCode(65 + i)}.</strong> ${opt}
+                        </button>
+                    `).join('')}
+                </div>
+                <div id="quizFeedback" style="margin-top: 16px;"></div>
+                <button class="btn btn-primary hidden" id="quizNextBtn" onclick="nextQuiz()" style="margin-top: 16px;">
+                    ඊළඟ ප්‍රශ්නය →
+                </button>
+            `;
+        }
+
+        function selectAnswer(selected) {
+            const q = quizData[currentQuiz];
+            const options = document.querySelectorAll('.quiz-option');
+            options.forEach(opt => opt.disabled = true);
+
+            document.getElementById('quiz-opt-' + selected).classList.add(
+                selected === q.correct ? 'correct' : 'wrong'
+            );
+
+            if (selected === q.correct) {
+                quizScore++;
+                document.getElementById('quizFeedback').innerHTML = `
+                    <div class="status-msg success">✅ නිවැරදියි!</div>
+                `;
+            } else {
+                document.getElementById('quiz-opt-' + q.correct).classList.add('correct');
+                document.getElementById('quizFeedback').innerHTML = `
+                    <div class="status-msg error">❌ වැරදියි! නිවැරදි පිළිතුර: ${String.fromCharCode(65 + q.correct)}</div>
+                `;
+            }
+
+            document.getElementById('quizNextBtn').classList.remove('hidden');
+        }
+
+        function nextQuiz() {
+            currentQuiz++;
+            loadQuiz();
+        }
+
+        function showQuizResult() {
+            const container = document.getElementById('quizContainer');
+            container.classList.add('hidden');
+
+            const result = document.getElementById('quizResult');
+            result.classList.remove('hidden');
+
+            const percentage = Math.round((quizScore / quizData.length) * 100);
+            let emoji, message;
+
+            if (percentage >= 80) {
+                emoji = '🏆';
+                message = 'අතිශයින්ම හොඳයි! ඔබ Confidentiality ගැන හොඳින් දන්නවා!';
+            } else if (percentage >= 60) {
+                emoji = '👍';
+                message = 'හොඳයි! තව ටිකක් ඉගෙන ගන්න!';
+            } else if (percentage >= 40) {
+                emoji = '📚';
+                message = 'මධ්‍යමයි. sandbox එක නැවත භාවිතා කර ඉගෙන ගන්න!';
+            } else {
+                emoji = '💪';
+                message = 'තව ඉගෙන ගන්න ඕනේ. sandbox එක භාවිතා කරන්න!';
+            }
+
+            result.innerHTML = `
+                <div class="score-display">
+                    <div style="font-size: 4rem;">${emoji}</div>
+                    <div class="score-num">${quizScore} / ${quizData.length}</div>
+                    <div class="score-label">${percentage}% — ${message}</div>
+                </div>
+                <button class="btn btn-purple" onclick="restartQuiz()" style="margin-top: 20px;">
+                    🔄 නැවත උත්සාහ කරන්න
+                </button>
+            `;
+        }
+
+        function restartQuiz() {
+            currentQuiz = 0;
+            quizScore = 0;
+            document.getElementById('quizContainer').classList.remove('hidden');
+            document.getElementById('quizResult').classList.add('hidden');
+            document.getElementById('quizResult').innerHTML = '';
+            loadQuiz();
+        }
+
+        // Initialize Quiz
+        loadQuiz();
+
+        // ==================== UTILITY ====================
+        function showStatus(elementId, message, type) {
+            const el = document.getElementById(elementId);
+            // This is a simple version - used for inline status
+        }
+    </script>
+</body>
+</html>
