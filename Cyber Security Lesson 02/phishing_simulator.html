@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phishing Awareness Simulator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .sandbox-container {
+            width: 100%;
+            max-width: 450px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* අධ්‍යාපනික අනතුරු ඇඟවීමේ පුවරුව */
+        .warning-banner {
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 12px;
+            text-align: center;
+            font-size: 0.9em;
+            border-bottom: 2px solid #ffeeba;
+            font-weight: bold;
+        }
+
+        /* ව්‍යාජ බැංකු පිටුවේ නිර්මාණය */
+        .fake-bank-ui {
+            padding: 30px;
+            text-align: center;
+        }
+
+        .bank-logo {
+            width: 60px;
+            height: 60px;
+            background-color: #0056b3;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .fake-bank-ui h2 {
+            color: #0056b3;
+            margin-bottom: 5px;
+        }
+
+        .fake-bank-ui p {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 1em;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+
+        .login-btn:hover {
+            background-color: #004494;
+        }
+
+        .urgency-text {
+            color: #dc3545;
+            font-size: 0.85em;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        /* ප්‍රතිඵල පෙන්වන කොටස (Analysis Panel) */
+        .analysis-panel {
+            display: none;
+            padding: 25px;
+            background-color: #f8f9fa;
+            border-top: 3px solid #28a745;
+        }
+
+        .analysis-panel h3 {
+            color: #28a745;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stolen-data {
+            background: #fff;
+            border: 1px dashed #dc3545;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            color: #dc3545;
+            font-family: monospace;
+            font-size: 0.95em;
+        }
+
+        .red-flags {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .red-flags h4 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .red-flags ul {
+            padding-left: 20px;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .red-flags li {
+            margin-bottom: 8px;
+        }
+
+        .reset-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .loader {
+            display: none;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #0056b3;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="sandbox-container">
+    <div class="warning-banner">
+        ⚠️ අධ්‍යාපනික අනුකරණයක් පමණි (Simulation). කරුණාකර ඔබේ සැබෑ මුරපද ඇතුළත් නොකරන්න.
+    </div>
+
+    <!-- ව්‍යාජ Phishing පිටුව -->
+    <div class="fake-bank-ui" id="phishingPage">
+        <div class="bank-logo">🏦</div>
+        <h2>Secure Lanka Bank</h2>
+        <p>ඔබේ ගිණුම තාවකාලිකව අත්හිටුවා ඇත. කරුණාකර තහවුරු කරන්න.</p>
+        
+        <form id="fakeLoginForm">
+            <div class="input-group">
+                <label for="username">පරිශීලක නාමය / ගිණුම් අංකය</label>
+                <input type="text" id="username" placeholder="උදා: user123" required>
+            </div>
+            <div class="input-group">
+                <label for="password">මුරපදය (Password)</label>
+                <input type="password" id="password" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="login-btn">පිවිසෙන්න (Login)</button>
+        </form>
+        
+        <p class="urgency-text">⚠️ පැය 24ක් ඇතුළත තහවුරු නොකළහොත් ගිණුම ස්ථිරවම අවලංගු වේ!</p>
+    </div>
+
+    <!-- Loading Animation -->
+    <div class="loader" id="loader"></div>
+
+    <!-- අධ්‍යාපනික විග්‍රහ පුවරුව -->
+    <div class="analysis-panel" id="analysisPanel">
+        <h3>🛡️ ඔබ Phishing ප්‍රහාරයකට හසුවී ඇත!</h3>
+        <p>ඔබ මෙම ව්‍යාජ පිටුවට ඇතුළත් කළ දත්ත පහත පරිදි ප්‍රහාරකයාට (Attacker) ලැබෙනු ඇත:</p>
+        
+        <div class="stolen-data" id="stolenDataDisplay">
+            <!-- JS මගින් දත්ත මෙහි පෙන්වයි -->
+        </div>
+
+        <div class="red-flags">
+            <h4>🚩 ඔබට මෙය Phishing ප්‍රහාරයක් බව හඳුනාගත හැකිවූයේ කෙසේද? (Red Flags)</h4>
+            <ul>
+                <li><strong>හදිසි බවක් ඇති කිරීම (Urgency):</strong> "පැය 24ක් ඇතුළත... නැතහොත් ගිණුම අවලංගු වේ" වැනි වාක්‍ය භාවිතා කර ඔබව බිය ගන්වා ඉක්මන් තීරණ ගැනීමට සලස්වයි.</li>
+                <li><strong>URL එක පරීක්ෂා කිරීම:</strong> සැබෑ බැංකුවක් නම් වෙබ් ලිපිනය (URL) `securelankabank.com` වැනි නිල වසමක් විය යුතුය. Phishing අඩවි බොහෝ විට `secure-lanka-bank-login.xyz` වැනි විකෘති නම් භාවිතා කරයි.</li>
+                <li><strong>HTTPS සහතිකය:</strong> බැංකු වෙබ් අඩවි සැමවිටම ආරක්ෂිත (HTTPS) විය යුතු අතර, බ්‍රව්සරයේ ලොක් අයිකනයක් තිබිය යුතුය.</li>
+                <li><strong>අක්ෂර වින්‍යාස දෝෂ:</strong> බොහෝ විට මෙම පණිවිඩවල භාෂාවේ දෝෂ හෝ අසංලක්ෂිත වාක්‍ය ඛණ්ඩ තිබිය හැක.</li>
+            </ul>
+        </div>
+
+        <button class="reset-btn" onclick="resetSimulation()">නැවත පරීක්ෂා කරන්න (Reset)</button>
+    </div>
+</div>
+
+<script>
+    const form = document.getElementById('fakeLoginForm');
+    const phishingPage = document.getElementById('phishingPage');
+    const analysisPanel = document.getElementById('analysisPanel');
+    const loader = document.getElementById('loader');
+    const stolenDataDisplay = document.getElementById('stolenDataDisplay');
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault(); // සැබෑ Form Submit කිරීම වළක්වයි
+
+        const user = document.getElementById('username').value;
+        const pass = document.getElementById('password').value;
+
+        // UI වෙනස් කිරීම (Loading පෙන්වීම)
+        phishingPage.style.display = 'none';
+        loader.style.display = 'block';
+
+        // තත්පර 1.5කට පසු ප්‍රතිඵලය පෙන්වීම (Network request එකක් අනුකරණය කිරීම)
+        setTimeout(() => {
+            loader.style.display = 'none';
+            analysisPanel.style.display = 'block';
+            
+            // හොරකම් වූ දත්ත පෙන්වීම (අධ්‍යාපනික අරමුණු සඳහා)
+            stolenDataDisplay.innerHTML = `
+                <strong>Target Username:</strong> ${user}<br>
+                <strong>Target Password:</strong> ${pass}<br>
+                <strong>IP Address:</strong> 192.168.x.x (Simulated)<br>
+                <strong>Status:</strong> <span style="color:red">DATA COMPROMISED</span>
+            `;
+        }, 1500);
+    });
+
+    function resetSimulation() {
+        // පිටුව නැවත මුල් තත්ත්වයට පත් කිරීම
+        document.getElementById('username').value = '';
+        document.getElementById('password').value = '';
+        analysisPanel.style.display = 'none';
+        phishingPage.style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
