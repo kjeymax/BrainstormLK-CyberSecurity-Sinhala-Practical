@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DDoS Attack Simulator - Server Admin View</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .warning-banner {
+            width: 100%;
+            max-width: 1000px;
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 12px;
+            text-align: center;
+            font-size: 0.9em;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            border: 1px solid #ffeeba;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 1000px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            min-height: 600px;
+        }
+
+        /* Left Side: The Website */
+        .website-view {
+            padding: 0;
+            position: relative;
+            background: #fff;
+            transition: all 0.5s;
+        }
+
+        .website-header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .website-content {
+            padding: 30px;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .product-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 120px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+
+        /* Lag Effect */
+        .lagging {
+            animation: jitter 0.2s infinite;
+            filter: blur(1px);
+            opacity: 0.7;
+        }
+
+        @keyframes jitter {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(-2px, 2px); }
+            50% { transform: translate(2px, -2px); }
+            75% { transform: translate(-2px, -2px); }
+            100% { transform: translate(0, 0); }
+        }
+
+        /* Right Side: Server Monitor */
+        .server-monitor {
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            border-left: 3px solid #333;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .monitor-header {
+            color: #fff;
+            border-bottom: 1px solid #444;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #00ff00;
+            margin-right: 8px;
+            box-shadow: 0 0 10px #00ff00;
+        }
+
+        .status-indicator.warning { background: #ffcc00; box-shadow: 0 0 10px #ffcc00; }
+        .status-indicator.critical { background: #ff0000; box-shadow: 0 0 10px #ff0000; animation: pulse 0.5s infinite; }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .metric-box {
+            background: #2a2a2a;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .metric-label {
+            color: #aaa;
+            font-size: 0.85em;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #444;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #00ff00;
+            width: 15%;
+            transition: width 0.5s, background 0.5s;
+        }
+
+        .terminal-log {
+            flex-grow: 1;
+            background: #000;
+            border: 1px solid #333;
+            border-radius: 4px;
+            padding: 10px;
+            font-size: 0.75em;
+            overflow-y: auto;
+            max-height: 250px;
+            color: #0f0;
+        }
+
+        .log-entry {
+            margin-bottom: 4px;
+            word-break: break-all;
+        }
+
+        .log-entry.attack {
+            color: #ff4444;
+        }
+
+        /* Crash Screen */
+        .crash-screen {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #f8f9fa;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .crash-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .crash-title {
+            font-size: 2em;
+            color: #dc3545;
+            margin-bottom: 10px;
+        }
+
+        .crash-code {
+            background: #333;
+            color: #fff;
+            padding: 5px 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+
+        /* Education Panel */
+        .education-panel {
+            display: none;
+            width: 100%;
+            max-width: 1000px;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .education-panel h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .attack-anatomy {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .anatomy-step {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-top: 4px solid #3498db;
+        }
+
+        .anatomy-step h4 {
+            margin: 10px 0;
+            color: #2c3e50;
+        }
+
+        .mitigation-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .mitigation-card {
+            background: #e8f5e9;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            border-radius: 4px;
+        }
+
+        .mitigation-card h4 {
+            color: #2e7d32;
+            margin-bottom: 8px;
+        }
+
+        .control-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background 0.3s;
+        }
+
+        .control-btn:hover {
+            background: #2980b9;
+        }
+
+        .control-btn.reset {
+            background: #6c757d;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+            .attack-anatomy, .mitigation-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style</head>
+<body>
+
+<div class="warning-banner">
+    ⚠️ අධ්‍යාපනික අනුකරණයක් පමණි | Educational Simulation Only. මෙය සැබෑ ප්‍රහාරයක් නොවේ.
+</div>
+
+<div class="main-container" id="mainContainer">
+    <!-- Left: Website -->
+    <div class="website-view" id="websiteView">
+        <div class="website-header">
+            <h2>🛒 LankaShop Online</h2>
+            <div>🛒 Cart (0)</div>
+        </div>
+        <div class="website-content" id="websiteContent">
+            <h3>අද දින විශේෂ දීමනා!</h3>
+            <p>අපගේ නවතම ඉලෙක්ට්‍රොනික භාණ්ඩ දැන් නොමිලේ නැව්ගත කිරීම සමඟ.</p>
+            
+            <div class="product-grid">
+                <div class="product-card">
+                    <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📱</text></svg>" alt="Phone">
+                    <h4>Smart Phone X</h4>
+                    <p style="color: #e74c3c; font-weight: bold;">Rs. 85,000</p>
+                    <button style="margin-top: 10px; padding: 8px 15px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer;">Add to Cart</button>
+                </div>
+                <div class="product-card">
+                    <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💻</text></svg>" alt="Laptop">
+                    <h4>Pro Laptop</h4>
+                    <p style="color: #e74c3c; font-weight: bold;">Rs. 150,000</p>
+                    <button style="margin-top: 10px; padding: 8px 15px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer;">Add to Cart</button>
+                </div>
+                <div class="product-card">
+                    <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎧</text></svg>" alt="Headphones">
+                    <h4>Wireless Headphones</h4>
+                    <p style="color: #e74c3c; font-weight: bold;">Rs. 12,000</p>
+                    <button style="margin-top: 10px; padding: 8px 15px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer;">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Crash Screen Overlay -->
+        <div class="crash-screen" id="crashScreen">
+            <div class="crash-icon">💥</div>
+            <div class="crash-title">වෙබ් අඩවිය බිඳ වැටී ඇත!</div>
+            <div class="crash-code">Error 503: Service Unavailable</div>
+            <p style="color: #666; max-width: 400px;">
+                සර්වරයට දරාගත නොහැකි තරම් ඉහළ ඉල්ලුම් ප්‍රමාණයක් (Traffic) ලැබෙමින් පවතී. 
+                කරුණාකර මද වේලාවකින් නැවත උත්සාහ කරන්න.
+            </p>
+        </div>
+    </div>
+
+    <!-- Right: Server Monitor -->
+    <div class="server-monitor">
+        <div class="monitor-header">
+            <span class="status-indicator" id="statusLight"></span>
+            <span id="statusText">SERVER ONLINE - HEALTHY</span>
+        </div>
+
+        <div class="metric-box">
+            <div class="metric-label">
+                <span>CPU Usage</span>
+                <span id="cpuValue">15%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="cpuBar"></div>
+            </div>
+        </div>
+
+        <div class="metric-box">
+            <div class="metric-label">
+                <span>RAM Usage</span>
+                <span id="ramValue">32%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="ramBar"></div>
+            </div>
+        </div>
+
+        <div class="metric-box">
+            <div class="metric-label">
+                <span>Network Traffic</span>
+                <span id="networkValue">45 Mbps</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="networkBar"></div>
+            </div>
+        </div>
+
+        <div class="metric-box">
+            <div class="metric-label">
+                <span>Active Connections</span>
+                <span id="connValue">124</span>
+            </div>
+        </div>
+
+        <div class="terminal-log" id="terminalLog">
+            <div class="log-entry">[10:00:01] System initialized. Waiting for requests...</div>
+            <div class="log-entry">[10:00:05] GET /index.html 200 OK (192.168.1.45)</div>
+            <div class="log-entry">[10:00:12] GET /products 200 OK (192.168.1.88)</div>
+        </div>
+
+        <button class="control-btn" id="attackBtn" onclick="startDDoSAttack()" style="width: 100%; margin-top: 15px; background: #e74c3c;">
+            ⚠️ Simulate DDoS Attack
+        </button>
+    </div>
+</div>
+
+<!-- Education Panel -->
+<div class="education-panel" id="educationPanel">
+    <h2>🛡️ DDoS ප්‍රහාර විග්‍රහය සහ වැළැක්වීම</h2>
+    <p style="color: #666; margin-bottom: 20px;">
+        ඉහත අනුකරණයේදී ඔබ දුටුවේ Distributed Denial of Service (DDoS) ප්‍රහාරයක් වෙබ් අඩවියකට බලපාන ආකාරයයි.
+    </p>
+
+    <h3 style="color: #2c3e50; margin-bottom: 15px;">ප්‍රහාරයේ ක්‍රියාවලිය (Attack Anatomy):</h3>
+    <div class="attack-anatomy">
+        <div class="anatomy-step">
+            <div style="font-size: 40px;">🤖</div>
+            <h4>1. Botnet නිර්මාණය</h4>
+            <p style="font-size: 0.9em; color: #666;">ප්‍රහාරකයා වෛරස් මගින් ලොව පුරා පරිගණක/IoT උපාංග දහස් ගණනක් පාලනය යටතට ගනී (Zombie computers).</p>
+        </div>
+        <div class="anatomy-step">
+            <div style="font-size: 40px;">🌊</div>
+            <h4>2. Traffic Flood</h4>
+            <p style="font-size: 0.9em; color: #666;">එම උපාංග සියල්ල එකවර ඉලක්කගත වෙබ් අඩවියට අනවශ්‍ය ඉල්ලීම් (Requests) යැවීම ආරම්භ කරයි.</p>
+        </div>
+        <div class="anatomy-step">
+            <div style="font-size: 40px;">💥</div>
+            <h4>3. Server Crash</h4>
+            <p style="font-size: 0.9em; color: #666;">සර්වරයේ CPU, RAM සහ Bandwidth සීමාව ඉක්මවා යන අතර, සැබෑ පාරිභෝගිකයින්ට පිවිසීමට නොහැකි වේ (503 Error).</p>
+        </div>
+    </div>
+
+    <h3 style="color: #2c3e50; margin: 30px 0 15px;">🛡️ DDoS ප්‍රහාර වැළැක්වීමේ ක්‍රම (Mitigation Strategies):</h3>
+    <div class="mitigation-grid">
+        <div class="mitigation-card">
+            <h4>🌐 CDN භාවිතා කිරීම (Cloudflare, AWS Shield)</h4>
+            <p>Content Delivery Network මගින් අනවශ්‍ය Traffic එක ඉලක්කගත සර්වරයට ළඟා වීමට පෙරම අල්ලා ගනී (Scrubbing).</p>
+        </div>
+        <div class="mitigation-card">
+            <h4>⚖️ Rate Limiting</h4>
+            <p>එකම IP ලිපිනයකින් තත්පරයකට එවිය හැකි ඉල්ලීම් (Requests) ප්‍රමාණය සීමා කිරීම.</p>
+        </div>
+        <div class="mitigation-card">
+            <h4>🔥 Web Application Firewall (WAF)</h4>
+            <p>සැක සහිත Traffic patterns හඳුනාගෙන ඒවා අවහිර (Block) කිරීම.</p>
+        </div>
+        <div class="mitigation-card">
+            <h4>📈 Scalable Infrastructure</h4>
+            <p>Traffic වැඩි වන විට ස්වයංක්‍රීයව සර්වර ධාරිතාව (Auto-scaling) වැඩි කිරීම.</p>
+        </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 30px;">
+        <button class="control-btn reset" onclick="resetSimulation()">🔄 නැවත අනුකරණය ආරම්භ කරන්න</button>
+    </div>
+</div>
+
+<script>
+    let attackInterval;
+    let logInterval;
+    let isAttacking = false;
+
+    // Fake IP generator for logs
+    function getRandomIP() {
+        return `${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`;
+    }
+
+    function addLog(message, isAttack = false) {
+        const log = document.getElementById('terminalLog');
+        const entry = document.createElement('div');
+        entry.className = `log-entry ${isAttack ? 'attack' : ''}`;
+        const time = new Date().toLocaleTimeString('en-US', {hour12: false});
+        entry.textContent = `[${time}] ${message}`;
+        log.appendChild(entry);
+        log.scrollTop = log.scrollHeight;
+    }
+
+    function startDDoSAttack() {
+        if (isAttacking) return;
+        isAttacking = true;
+        document.getElementById('attackBtn').disabled = true;
+        document.getElementById('attackBtn').textContent = '⚠️ ATTACK IN PROGRESS...';
+        document.getElementById('attackBtn').style.background = '#c0392b';
+
+        addLog('WARNING: Unusual traffic spike detected!', true);
+        addLog('WARNING: Multiple SYN requests from unknown IPs', true);
+
+        let cpu = 15;
+        let ram = 32;
+        let network = 45;
+        let connections = 124;
+
+        attackInterval = setInterval(() => {
+            // Spike metrics
+            cpu = Math.min(100, cpu + Math.random() * 8);
+            ram = Math.min(100, ram + Math.random() * 5);
+            network = Math.min(1000, network + Math.random() * 50);
+            connections += Math.floor(Math.random() * 500) + 100;
+
+            updateMetrics(cpu, ram, network, connections);
+
+            // Add fake attack logs
+            if (Math.random() > 0.3) {
+                addLog(`GET / HTTP/1.1 429 Too Many Requests (${getRandomIP()})`, true);
+            }
+
+            // Visual lag on website
+            if (cpu > 60) {
+                document.getElementById('websiteContent').classList.add('lagging');
+            }
+
+            // Crash condition
+            if (cpu >= 98) {
+                triggerCrash();
+            }
+        }, 200);
+
+        // Rapid log generation
+        logInterval = setInterval(() => {
+            if (Math.random() > 0.5) {
+                addLog(`POST /login HTTP/1.1 503 Service Unavailable (${getRandomIP()})`, true);
+            }
+        }, 100);
+    }
+
+    function updateMetrics(cpu, ram, network, connections) {
+        document.getElementById('cpuValue').textContent = Math.round(cpu) + '%';
+        document.getElementById('cpuBar').style.width = cpu + '%';
+        
+        document.getElementById('ramValue').textContent = Math.round(ram) + '%';
+        document.getElementById('ramBar').style.width = ram + '%';
+        
+        document.getElementById('networkValue').textContent = Math.round(network) + ' Mbps';
+        document.getElementById('networkBar').style.width = Math.min(100, network / 10) + '%';
+        
+        document.getElementById('connValue').textContent = connections.toLocaleString();
+
+        // Change colors based on severity
+        const cpuBar = document.getElementById('cpuBar');
+        const statusLight = document.getElementById('statusLight');
+        const statusText = document.getElementById('statusText');
+
+        if (cpu > 80) {
+            cpuBar.style.background = '#ff0000';
+            statusLight.className = 'status-indicator critical';
+            statusText.textContent = 'CRITICAL: UNDER ATTACK';
+            statusText.style.color = '#ff0000';
+        } else if (cpu > 50) {
+            cpuBar.style.background = '#ffcc00';
+            statusLight.className = 'status-indicator warning';
+            statusText.textContent = 'WARNING: HIGH LOAD';
+            statusText.style.color = '#ffcc00';
+        }
+    }
+
+    function triggerCrash() {
+        clearInterval(attackInterval);
+        clearInterval(logInterval);
+        
+        addLog('FATAL: Server resources exhausted. Connection refused.', true);
+        addLog('FATAL: Service shutting down to prevent hardware damage.', true);
+        
+        document.getElementById('websiteContent').classList.remove('lagging');
+        document.getElementById('crashScreen').style.display = 'flex';
+        
+        setTimeout(() => {
+            document.getElementById('mainContainer').style.display = 'none';
+            document.getElementById('educationPanel').style.display = 'block';
+        }, 3000);
+    }
+
+    function resetSimulation() {
+        isAttacking = false;
+        document.getElementById('educationPanel').style.display = 'none';
+        document.getElementById('mainContainer').style.display = 'grid';
+        document.getElementById('crashScreen').style.display = 'none';
+        document.getElementById('websiteContent').classList.remove('lagging');
+        
+        document.getElementById('attackBtn').disabled = false;
+        document.getElementById('attackBtn').textContent = '⚠️ Simulate DDoS Attack';
+        document.getElementById('attackBtn').style.background = '#e74c3c';
+        
+        document.getElementById('statusLight').className = 'status-indicator';
+        document.getElementById('statusText').textContent = 'SERVER ONLINE - HEALTHY';
+        document.getElementById('statusText').style.color = '#fff';
+        
+        document.getElementById('terminalLog').innerHTML = `
+            <div class="log-entry">[10:00:01] System initialized. Waiting for requests...</div>
+            <div class="log-entry">[10:00:05] GET /index.html 200 OK (192.168.1.45)</div>
+            <div class="log-entry">[10:00:12] GET /products 200 OK (192.168.1.88)</div>
+        `;
+        
+        updateMetrics(15, 32, 45, 124);
+    }
+</script>
+
+</body>
+</html>
