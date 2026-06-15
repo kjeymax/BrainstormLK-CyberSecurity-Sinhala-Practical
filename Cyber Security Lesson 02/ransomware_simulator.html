@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ransomware Awareness Simulator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .simulator-container {
+            width: 100%;
+            max-width: 600px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .warning-banner {
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 12px;
+            text-align: center;
+            font-size: 0.9em;
+            border-bottom: 2px solid #ffeeba;
+            font-weight: bold;
+        }
+
+        /* Stage 1: Download Page */
+        .download-page {
+            padding: 30px;
+            text-align: center;
+        }
+
+        .download-page h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .download-page p {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .software-preview {
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .software-preview img {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-top: 10px;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .suspicious-link {
+            color: #dc3545;
+            font-size: 0.85em;
+            margin-top: 15px;
+            font-style: italic;
+        }
+
+        /* Stage 2: Encryption Animation */
+        .encryption-stage {
+            display: none;
+            padding: 30px;
+            background: #1a1a1a;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            min-height: 400px;
+        }
+
+        .encryption-stage h3 {
+            color: #ff0000;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.5em;
+        }
+
+        .file-list {
+            background: #000;
+            border: 1px solid #333;
+            border-radius: 4px;
+            padding: 15px;
+            max-height: 250px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .file-item {
+            padding: 8px;
+            margin: 5px 0;
+            background: #111;
+            border-left: 3px solid #00ff00;
+            transition: all 0.3s;
+        }
+
+        .file-item.encrypting {
+            border-left-color: #ffff00;
+            animation: pulse 0.5s infinite;
+        }
+
+        .file-item.encrypted {
+            border-left-color: #ff0000;
+            background: #220000;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #333;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff0000, #ff6600);
+            width: 0%;
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Stage 3: Ransom Note */
+        .ransom-note {
+            display: none;
+            padding: 30px;
+            background: #000;
+            color: #ff0000;
+            text-align: center;
+        }
+
+        .ransom-note h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #ff0000;
+        }
+
+        .lock-icon {
+            font-size: 80px;
+            margin: 20px 0;
+            animation: shake 0.5s infinite;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .ransom-message {
+            background: #111;
+            border: 2px solid #ff0000;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+            color: #fff;
+            line-height: 1.8;
+        }
+
+        .bitcoin-address {
+            background: #222;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            word-break: break-all;
+            margin: 15px 0;
+            color: #ffff00;
+        }
+
+        .countdown {
+            font-size: 1.5em;
+            color: #ff6600;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        /* Stage 4: Educational Analysis */
+        .analysis-stage {
+            display: none;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+
+        .analysis-stage h3 {
+            color: #28a745;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .impact-summary {
+            background: #fff;
+            border-left: 4px solid #dc3545;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .prevention-tips {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .prevention-tips h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .prevention-tips ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .prevention-tips li {
+            padding: 12px;
+            margin: 10px 0;
+            background: #e8f5e9;
+            border-left: 4px solid #28a745;
+            border-radius: 4px;
+            line-height: 1.6;
+        }
+
+        .prevention-tips li strong {
+            color: #2e7d32;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .reset-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1em;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .reset-btn:hover {
+            background: #5a6268;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="simulator-container">
+    <div class="warning-banner">
+        ⚠️ අධ්‍යාපනික අනුකරණයක් පමණි (Simulation). මෙය ඔබේ පරිගණකයට කිසිදු හානියක් නොකරයි.
+    </div>
+
+    <!-- Stage 1: Download Page -->
+    <div class="download-page" id="downloadPage">
+        <h2>🎉 සුභ පැතුම්! ඔබට නොමිලේ මෘදුකාංගයක්!</h2>
+        <p>ඔබට අපගේ "Free Video Converter Pro" මෘදුකාංගය නොමිලේ ලබා ගත හැක!</p>
+        
+        <div class="software-preview">
+            <div style="font-size: 48px;">📹</div>
+            <h3>Video Converter Pro</h3>
+            <p style="color: #666; font-size: 0.9em;">Version 5.2.1 | 15MB | Free Download</p>
+        </div>
+
+        <button class="download-btn" onclick="startInfection()">
+            📥 දැන්ම Download කරන්න
+        </button>
+
+        <p class="suspicious-link">
+            ⚠️ සැලකිය යුතුයි: මෙය free-software-download.xyz වෙබ් අඩවියකි
+        </p>
+    </div>
+
+    <!-- Stage 2: Encryption Animation -->
+    <div class="encryption-stage" id="encryptionStage">
+        <h3>⚠️ SYSTEM COMPROMISED ⚠️</h3>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill">0%</div>
+        </div>
+
+        <div class="file-list" id="fileList">
+            <!-- Files will be added here dynamically -->
+        </div>
+
+        <p style="text-align: center; color: #ff0000; margin-top: 20px;">
+            🔒 ඔබේ සියලුම දත්ත Encrypt වෙමින් පවතී...
+        </p>
+    </div>
+
+    <!-- Stage 3: Ransom Note -->
+    <div class="ransom-note" id="ransomNote">
+        <div class="lock-icon">🔒</div>
+        <h2>YOUR FILES HAVE BEEN ENCRYPTED!</h2>
+        
+        <div class="ransom-message">
+            <p>ඔබේ සියලුම වැදගත් දත්ත (Documents, Photos, Videos) RSA-2048 encryption මගින් Encrypt කර ඇත.</p>
+            <p style="margin-top: 15px;">මෙම දත්ත නැවත ලබා ගැනීමට නම්, ඔබ පහත Bitcoin ලිපිනයට <strong>0.5 BTC</strong> (ඇමරිකානු ඩොලර් 20,000ක් පමණ) ගෙවිය යුතුය.</p>
+            
+            <div class="bitcoin-address">
+                <strong>Bitcoin Address:</strong><br>
+                bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh
+            </div>
+
+            <div class="countdown" id="countdown">
+                ⏰ ඉතිරි කාලය: 71:59:59
+            </div>
+
+            <p style="color: #ff6600; font-size: 0.9em;">
+                ⚠️ කාලය ඉකුත් වූ පසු ඔබේ දත්ත ස්ථිරවම මකා දැමෙනු ඇත!
+            </p>
+        </div>
+    </div>
+
+    <!-- Stage 4: Educational Analysis -->
+    <div class="analysis-stage" id="analysisStage">
+        <h3>🛡️ Ransomware ප්‍රහාරයකට ඔබ හසුවී ඇත!</h3>
+        
+        <div class="impact-summary">
+            <h4 style="color: #dc3545; margin-bottom: 10px;">💥 ප්‍රහාරයේ බලපෑම:</h4>
+            <ul style="padding-left: 20px; line-height: 1.8;">
+                <li>ඔබේ සියලුම දත්ත Encrypt වී ඇත</li>
+                <li>දත්ත නැවත ලබා ගැනීමට හැකියාව නැත (Backup නොමැති නම්)</li>
+                <li>මූල්‍යමය වශයෙන් විශාල පාඩුවක් සිදුවේ</li>
+                <li>ව්‍යාපාර කටයුතු අඩාල වේ</li>
+            </ul>
+        </div>
+
+        <div class="prevention-tips">
+            <h4>✅ Ransomware වැළැක්වීමට ගත හැකි පියවර:</h4>
+            <ul>
+                <li>
+                    <strong>1. නිතිපතා Backup ලබා ගන්න</strong>
+                    External Hard Drive හෝ Cloud Storage (Google Drive, OneDrive) භාවිතා කර ඔබේ වැදගත් දත්තවල පිටපත් තබා ගන්න.
+                </li>
+                <li>
+                    <strong>2. සැක සහිත Email Attachments නොවිවෘත කරන්න</strong>
+                    ඔබ නොදන්නා අයගෙන් ලැබෙන Email වල ඇති Attachments (.exe, .zip, .scr) විවෘත නොකරන්න.
+                </li>
+                <li>
+                    <strong>3. නිල මෘදුකාංග පමණක් Download කරන්න</strong>
+                    Software Download කිරීමේදී නිල වෙබ් අඩවි පමණක් භාවිතා කරන්න. "Cracked" හෝ "Free" software වලින් වළකින්න.
+                </li>
+                <li>
+                    <strong>4. Operating System සහ Antivirus යාවත්කාලීනව තබා ගන්න</strong>
+                    Windows Updates සහ Antivirus Definitions නිතිපතා Update කරන්න.
+                </li>
+                <li>
+                    <strong>5. URL පරීක්ෂා කරන්න</strong>
+                    වෙබ් අඩවියක URL එක සැමවිටම පරීක්ෂා කරන්න. `free-software-download.xyz` වැනි සැක සහිත domains වලින් වළකින්න.
+                </li>
+                <li>
+                    <strong>6. කප්පම් ගෙවීමෙන් වළකින්න</strong>
+                    Ransomware ප්‍රහාරයකට මුහුණ දුන්නද, කප්පම් ගෙවීමෙන් ප්‍රහාරකයින්ට මුදල් ලැබෙන අතර, දත්ත නැවත ලැබෙන බවට සහතිකයක් නැත.
+                </li>
+            </ul>
+        </div>
+
+        <button class="reset-btn" onclick="resetSimulation()">🔄 නැවත පරීක්ෂා කරන්න</button>
+    </div>
+</div>
+
+<script>
+    const files = [
+        '📄 Documents/Report_2024.docx',
+        '🖼️ Pictures/Family_Photo.jpg',
+        '📊 Excel/Budget.xlsx',
+        '🎵 Music/Favorite_Song.mp3',
+        '📹 Videos/Vacation.mp4',
+        '📄 Documents/Passport_Scan.pdf',
+        '💼 Work/Project_Presentation.pptx',
+        '📧 Emails/Important_Messages.db',
+        '🔐 Passwords/passwords.kdbx',
+        '📄 Documents/Tax_Return_2023.pdf'
+    ];
+
+    let currentFileIndex = 0;
+    let progress = 0;
+
+    function startInfection() {
+        document.getElementById('downloadPage').style.display = 'none';
+        document.getElementById('encryptionStage').style.display = 'block';
+        
+        startEncryption();
+    }
+
+    function startEncryption() {
+        const fileList = document.getElementById('fileList');
+        const progressFill = document.getElementById('progressFill');
+        
+        fileList.innerHTML = '';
+        
+        const interval = setInterval(() => {
+            if (currentFileIndex >= files.length) {
+                clearInterval(interval);
+                setTimeout(showRansomNote, 1000);
+                return;
+            }
+
+            const fileItem = document.createElement('div');
+            fileItem.className = 'file-item encrypting';
+            fileItem.textContent = files[currentFileIndex];
+            fileList.appendChild(fileItem);
+
+            setTimeout(() => {
+                fileItem.classList.remove('encrypting');
+                fileItem.classList.add('encrypted');
+                fileItem.textContent = files[currentFileIndex] + ' → ' + files[currentFileIndex] + '.locked';
+            }, 500);
+
+            currentFileIndex++;
+            progress = (currentFileIndex / files.length) * 100;
+            progressFill.style.width = progress + '%';
+            progressFill.textContent = Math.round(progress) + '%';
+
+            fileList.scrollTop = fileList.scrollHeight;
+        }, 800);
+    }
+
+    function showRansomNote() {
+        document.getElementById('encryptionStage').style.display = 'none';
+        document.getElementById('ransomNote').style.display = 'block';
+        
+        startCountdown();
+        
+        setTimeout(showAnalysis, 5000);
+    }
+
+    function startCountdown() {
+        let hours = 71;
+        let minutes = 59;
+        let seconds = 59;
+        
+        const countdownElement = document.getElementById('countdown');
+        
+        const interval = setInterval(() => {
+            seconds--;
+            
+            if (seconds < 0) {
+                seconds = 59;
+                minutes--;
+            }
+            
+            if (minutes < 0) {
+                minutes = 59;
+                hours--;
+            }
+            
+            countdownElement.textContent = `⏰ ඉතිරි කාලය: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }, 1000);
+    }
+
+    function showAnalysis() {
+        document.getElementById('ransomNote').style.display = 'none';
+        document.getElementById('analysisStage').style.display = 'block';
+    }
+
+    function resetSimulation() {
+        currentFileIndex = 0;
+        progress = 0;
+        
+        document.getElementById('analysisStage').style.display = 'none';
+        document.getElementById('downloadPage').style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
