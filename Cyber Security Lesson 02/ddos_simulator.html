@@ -324,7 +324,8 @@
                 grid-template-columns: 1fr;
             }
         }
-    </style</head>
+    </style>
+</head>
 <body>
 
 <div class="warning-banner">
@@ -488,7 +489,6 @@
     let logInterval;
     let isAttacking = false;
 
-    // Fake IP generator for logs
     function getRandomIP() {
         return `${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`;
     }
@@ -519,7 +519,6 @@
         let connections = 124;
 
         attackInterval = setInterval(() => {
-            // Spike metrics
             cpu = Math.min(100, cpu + Math.random() * 8);
             ram = Math.min(100, ram + Math.random() * 5);
             network = Math.min(1000, network + Math.random() * 50);
@@ -527,23 +526,19 @@
 
             updateMetrics(cpu, ram, network, connections);
 
-            // Add fake attack logs
             if (Math.random() > 0.3) {
                 addLog(`GET / HTTP/1.1 429 Too Many Requests (${getRandomIP()})`, true);
             }
 
-            // Visual lag on website
             if (cpu > 60) {
                 document.getElementById('websiteContent').classList.add('lagging');
             }
 
-            // Crash condition
             if (cpu >= 98) {
                 triggerCrash();
             }
         }, 200);
 
-        // Rapid log generation
         logInterval = setInterval(() => {
             if (Math.random() > 0.5) {
                 addLog(`POST /login HTTP/1.1 503 Service Unavailable (${getRandomIP()})`, true);
@@ -563,7 +558,6 @@
         
         document.getElementById('connValue').textContent = connections.toLocaleString();
 
-        // Change colors based on severity
         const cpuBar = document.getElementById('cpuBar');
         const statusLight = document.getElementById('statusLight');
         const statusText = document.getElementById('statusText');
