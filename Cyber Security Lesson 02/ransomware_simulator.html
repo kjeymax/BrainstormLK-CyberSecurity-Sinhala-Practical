@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ransomware Awareness Simulator</title>
+    <title>🎁 Special Offer - 50GB Free Data</title>
     <style>
         * {
             margin: 0;
@@ -12,401 +12,758 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            padding: 20px;
+            padding: 10px;
         }
 
-        .simulator-container {
+        .warning-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #fff3cd;
+            color: #856404;
+            padding: 10px;
+            text-align: center;
+            font-size: 0.85em;
+            font-weight: bold;
+            z-index: 1000;
+            border-bottom: 2px solid #ffeeba;
+        }
+
+        .main-container {
             width: 100%;
-            max-width: 600px;
+            max-width: 480px;
+            margin-top: 40px;
             background: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             overflow: hidden;
             position: relative;
         }
 
-        .warning-banner {
-            background-color: #fff3cd;
-            color: #856404;
+        /* Header with branding */
+        .promo-header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .promo-header::before {
+            content: '🎉';
+            position: absolute;
+            font-size: 100px;
+            opacity: 0.1;
+            top: -20px;
+            right: -20px;
+        }
+
+        .verified-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            margin-bottom: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .promo-header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .promo-header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        /* Urgency Banner */
+        .urgency-banner {
+            background: #ff4757;
+            color: white;
             padding: 12px;
             text-align: center;
-            font-size: 0.9em;
-            border-bottom: 2px solid #ffeeba;
             font-weight: bold;
-        }
-
-        /* Stage 1: Download Page */
-        .download-page {
-            padding: 30px;
-            text-align: center;
-        }
-
-        .download-page h2 {
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        .download-page p {
-            color: #666;
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
-
-        .software-preview {
-            background: #f8f9fa;
-            border: 2px dashed #dee2e6;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 20px 0;
-        }
-
-        .software-preview img {
-            font-size: 48px;
-            margin-bottom: 10px;
-        }
-
-        .download-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            font-size: 1.1em;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: transform 0.2s;
-            margin-top: 10px;
-        }
-
-        .download-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        .suspicious-link {
-            color: #dc3545;
-            font-size: 0.85em;
-            margin-top: 15px;
-            font-style: italic;
-        }
-
-        /* Stage 2: Encryption Animation */
-        .encryption-stage {
-            display: none;
-            padding: 30px;
-            background: #1a1a1a;
-            color: #00ff00;
-            font-family: 'Courier New', monospace;
-            min-height: 400px;
-        }
-
-        .encryption-stage h3 {
-            color: #ff0000;
-            margin-bottom: 20px;
-            text-align: center;
-            font-size: 1.5em;
-        }
-
-        .file-list {
-            background: #000;
-            border: 1px solid #333;
-            border-radius: 4px;
-            padding: 15px;
-            max-height: 250px;
-            overflow-y: auto;
-            margin-bottom: 20px;
-        }
-
-        .file-item {
-            padding: 8px;
-            margin: 5px 0;
-            background: #111;
-            border-left: 3px solid #00ff00;
-            transition: all 0.3s;
-        }
-
-        .file-item.encrypting {
-            border-left-color: #ffff00;
-            animation: pulse 0.5s infinite;
-        }
-
-        .file-item.encrypted {
-            border-left-color: #ff0000;
-            background: #220000;
+            animation: pulse 2s infinite;
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+            0%, 100% { background: #ff4757; }
+            50% { background: #ff6b81; }
         }
 
-        .progress-bar {
-            width: 100%;
-            height: 30px;
-            background: #333;
-            border-radius: 15px;
-            overflow: hidden;
-            margin: 20px 0;
+        .countdown-timer {
+            font-size: 1.3em;
+            font-family: monospace;
+            margin-top: 5px;
         }
 
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #ff0000, #ff6600);
-            width: 0%;
-            transition: width 0.3s;
+        /* Social Proof */
+        .social-proof {
+            background: #f8f9fa;
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .claim-counter {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .avatar-group {
+            display: flex;
+        }
+
+        .avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            border: 2px solid white;
+            margin-left: -10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
+            font-size: 0.8em;
             font-weight: bold;
         }
 
-        /* Stage 3: Ransom Note */
-        .ransom-note {
-            display: none;
-            padding: 30px;
-            background: #000;
-            color: #ff0000;
+        .avatar:first-child {
+            margin-left: 0;
+        }
+
+        .claim-text {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .claim-number {
+            color: #f5576c;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        /* Main Content */
+        .promo-content {
+            padding: 25px 20px;
+        }
+
+        .data-package {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
             text-align: center;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
         }
 
-        .ransom-note h2 {
-            font-size: 2em;
-            margin-bottom: 20px;
-            text-shadow: 0 0 10px #ff0000;
+        .data-amount {
+            font-size: 3.5em;
+            font-weight: bold;
+            margin: 10px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
 
-        .lock-icon {
-            font-size: 80px;
-            margin: 20px 0;
-            animation: shake 0.5s infinite;
+        .data-validity {
+            font-size: 1.1em;
+            opacity: 0.95;
         }
 
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
-
-        .ransom-message {
-            background: #111;
-            border: 2px solid #ff0000;
-            border-radius: 8px;
-            padding: 20px;
+        .features-list {
+            list-style: none;
             margin: 20px 0;
             text-align: left;
-            color: #fff;
-            line-height: 1.8;
         }
 
-        .bitcoin-address {
-            background: #222;
-            padding: 15px;
-            border-radius: 4px;
-            font-family: monospace;
-            word-break: break-all;
-            margin: 15px 0;
-            color: #ffff00;
-        }
-
-        .countdown {
-            font-size: 1.5em;
-            color: #ff6600;
-            margin: 20px 0;
-            font-weight: bold;
-        }
-
-        /* Stage 4: Educational Analysis */
-        .analysis-stage {
-            display: none;
-            padding: 30px;
-            background: #f8f9fa;
-        }
-
-        .analysis-stage h3 {
-            color: #28a745;
-            margin-bottom: 15px;
+        .features-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        .impact-summary {
-            background: #fff;
-            border-left: 4px solid #dc3545;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 4px;
+        .features-list li:last-child {
+            border-bottom: none;
         }
 
-        .prevention-tips {
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 20px 0;
+        /* Form Styles */
+        .claim-form {
+            margin-top: 20px;
         }
 
-        .prevention-tips h4 {
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
             color: #333;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-hint {
+            font-size: 0.85em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .cta-button {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 5px 20px rgba(245, 87, 108, 0.4);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(245, 87, 108, 0.5);
+        }
+
+        .cta-button:active {
+            transform: translateY(0);
+        }
+
+        .secure-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 15px;
+            color: #28a745;
+            font-size: 0.9em;
+        }
+
+        /* Testimonials */
+        .testimonials {
+            background: #f8f9fa;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 10px;
+        }
+
+        .testimonials h3 {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        .testimonial-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .testimonial-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .testimonial-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .testimonial-name {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .testimonial-time {
+            font-size: 0.85em;
+            color: #999;
+        }
+
+        .testimonial-text {
+            color: #666;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+
+        /* Loading & Success States */
+        .loading-overlay {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.95);
+            z-index: 100;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #f5576c;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 1.2em;
+            color: #333;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .loading-subtext {
+            color: #666;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        /* Ransom Stage */
+        .ransom-stage {
+            display: none;
+            padding: 40px 20px;
+            text-align: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            min-height: 500px;
+        }
+
+        .lock-icon-large {
+            font-size: 100px;
+            margin-bottom: 20px;
+            animation: shake 0.5s infinite;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0) rotate(0deg); }
+            25% { transform: translateX(-10px) rotate(-5deg); }
+            75% { transform: translateX(10px) rotate(5deg); }
+        }
+
+        .ransom-title {
+            font-size: 2em;
+            color: #ff4757;
             margin-bottom: 15px;
         }
 
-        .prevention-tips ul {
-            list-style: none;
-            padding: 0;
+        .ransom-message {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            line-height: 1.8;
+            border-left: 4px solid #ff4757;
         }
 
-        .prevention-tips li {
-            padding: 12px;
-            margin: 10px 0;
-            background: #e8f5e9;
-            border-left: 4px solid #28a745;
-            border-radius: 4px;
-            line-height: 1.6;
+        .encryption-info {
+            background: rgba(255,71,87,0.2);
+            border: 2px solid #ff4757;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
         }
 
-        .prevention-tips li strong {
-            color: #2e7d32;
-            display: block;
-            margin-bottom: 5px;
+        .file-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-box {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #ff4757;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        /* Educational Panel */
+        .education-panel {
+            display: none;
+            padding: 30px 20px;
+            background: #f8f9fa;
+        }
+
+        .education-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .education-header h2 {
+            color: #28a745;
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+
+        .alert-box {
+            background: white;
+            border-left: 5px solid #ff4757;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .alert-box h3 {
+            color: #ff4757;
+            margin-bottom: 10px;
+        }
+
+        .prevention-grid {
+            display: grid;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .prevention-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .prevention-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .reset-btn {
             background: #6c757d;
             color: white;
             border: none;
-            padding: 12px 30px;
+            padding: 15px 30px;
+            border-radius: 8px;
             font-size: 1em;
-            border-radius: 6px;
             cursor: pointer;
             margin-top: 20px;
+            width: 100%;
         }
 
-        .reset-btn:hover {
-            background: #5a6268;
+        .trust-badges {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
         }
 
-        .hidden {
-            display: none;
+        .trust-badge {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.85em;
+            color: #666;
         }
     </style>
 </head>
 <body>
 
-<div class="simulator-container">
-    <div class="warning-banner">
-        ⚠️ අධ්‍යාපනික අනුකරණයක් පමණි (Simulation). මෙය ඔබේ පරිගණකයට කිසිදු හානියක් නොකරයි.
-    </div>
+<div class="warning-banner">
+    ⚠️ අධ්‍යාපනික අනුකරණයක් පමණි | Educational Simulation Only
+</div>
 
-    <!-- Stage 1: Download Page -->
-    <div class="download-page" id="downloadPage">
-        <h2>🎉 සුභ පැතුම්! ඔබට නොමිලේ මෘදුකාංගයක්!</h2>
-        <p>ඔබට අපගේ "Free Video Converter Pro" මෘදුකාංගය නොමිලේ ලබා ගත හැක!</p>
-        
-        <div class="software-preview">
-            <div style="font-size: 48px;">📹</div>
-            <h3>Video Converter Pro</h3>
-            <p style="color: #666; font-size: 0.9em;">Version 5.2.1 | 15MB | Free Download</p>
+<div class="main-container">
+    <!-- Stage 1: Phishing Offer Page -->
+    <div id="phishingPage">
+        <div class="promo-header">
+            <div class="verified-badge">
+                ✓ Verified Official Partner
+            </div>
+            <h1>🎁 ස්පෙෂල් ඔෆර්!</h1>
+            <p>50GB නොමිලේ Data + Unlimited Calls</p>
         </div>
 
-        <button class="download-btn" onclick="startInfection()">
-            📥 දැන්ම Download කරන්න
-        </button>
-
-        <p class="suspicious-link">
-            ⚠️ සැලකිය යුතුයි: මෙය free-software-download.xyz වෙබ් අඩවියකි
-        </p>
-    </div>
-
-    <!-- Stage 2: Encryption Animation -->
-    <div class="encryption-stage" id="encryptionStage">
-        <h3>⚠️ SYSTEM COMPROMISED ⚠️</h3>
-        
-        <div class="progress-bar">
-            <div class="progress-fill" id="progressFill">0%</div>
+        <div class="urgency-banner">
+            ⏰ සීමිත කාලයක් පමණයි!
+            <div class="countdown-timer" id="offerTimer">04:59:59</div>
         </div>
 
-        <div class="file-list" id="fileList">
-            <!-- Files will be added here dynamically -->
+        <div class="social-proof">
+            <div class="claim-counter">
+                <div class="avatar-group">
+                    <div class="avatar">👤</div>
+                    <div class="avatar">👤</div>
+                    <div class="avatar">👤</div>
+                    <div class="avatar">👤</div>
+                </div>
+                <div class="claim-text">
+                    <span class="claim-number" id="claimCount">2,847</span> දෙනෙක් අද දිනම claim කර ඇත!
+                </div>
+            </div>
         </div>
 
-        <p style="text-align: center; color: #ff0000; margin-top: 20px;">
-            🔒 ඔබේ සියලුම දත්ත Encrypt වෙමින් පවතී...
-        </p>
+        <div class="promo-content">
+            <div class="data-package">
+                <div style="font-size: 1.2em; margin-bottom: 10px;">📱 මෙම මස සඳහා විශේෂයි</div>
+                <div class="data-amount">50 GB</div>
+                <div class="data-validity">දින 30ක් වලංගුයි + Unlimited Calls</div>
+                
+                <ul class="features-list">
+                    <li>✅ 50GB 4G/5G Data</li>
+                    <li>✅ සියලුම ජාල වලට Unlimited Calls</li>
+                    <li>✅ Free SMS 1000ක්</li>
+                    <li>✅ කිසිදු commitment එකක් නැත</li>
+                </ul>
+            </div>
+
+            <form class="claim-form" id="claimForm">
+                <div class="form-group">
+                    <label for="phoneNumber">📱 ඔබේ දුරකථන අංකය</label>
+                    <input type="tel" id="phoneNumber" placeholder="07X XXX XXXX" required>
+                    <div class="form-hint">ඔබේ දුරකථනයට OTP එකක් යවනු ඇත</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="nic">🆔 ාතික හැඳුනුම්පත් අංකය</label>
+                    <input type="text" id="nic" placeholder="19901234567V හෝ 200012345678" required>
+                    <div class="form-hint">වයස තහවුරු කිරීම සඳහා පමණි</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">📧 Email ලිපිනය (Optional)</label>
+                    <input type="email" id="email" placeholder="yourname@email.com">
+                </div>
+
+                <button type="submit" class="cta-button">
+                    🎉 දැන්ම Claim කරන්න
+                </button>
+
+                <div class="secure-badge">
+                    🔒 SSL Secure Encryption | 100% Safe & Verified
+                </div>
+            </form>
+
+            <div class="testimonials">
+                <h3>⭐ අද දිනම claim කළ අයගේ අදහස්</h3>
+                
+                <div class="testimonial-item">
+                    <div class="testimonial-header">
+                        <div class="testimonial-avatar">ක</div>
+                        <div>
+                            <div class="testimonial-name">කසුන් පෙරේරා</div>
+                            <div class="testimonial-time">2 මිනිත්තු පෙර</div>
+                        </div>
+                    </div>
+                    <div class="testimonial-text">
+                        "ඇත්තටම වැඩ කරනවා! 50GB ලැබුණා. ගොඩක් ස්තූතියි! 🙏"
+                    </div>
+                </div>
+
+                <div class="testimonial-item">
+                    <div class="testimonial-header">
+                        <div class="testimonial-avatar">න</div>
+                        <div>
+                            <div class="testimonial-name">නිමේෂා සිල්වා</div>
+                            <div class="testimonial-time">5 මිනිත්තු පෙර</div>
+                        </div>
+                    </div>
+                    <div class="testimonial-text">
+                        "මම හිතුවේ fake කියලා. ඒත් ඇත්තටම data ලැබුණා. Super! 👍"
+                    </div>
+                </div>
+            </div>
+
+            <div class="trust-badges">
+                <div class="trust-badge">🔒 SSL Secured</div>
+                <div class="trust-badge">✓ Verified</div>
+                <div class="trust-badge">🏆 Official Partner</div>
+            </div>
+        </div>
     </div>
 
-    <!-- Stage 3: Ransom Note -->
-    <div class="ransom-note" id="ransomNote">
-        <div class="lock-icon">🔒</div>
-        <h2>YOUR FILES HAVE BEEN ENCRYPTED!</h2>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <div class="loading-text">දත්ත තහවුරු කරමින්...</div>
+        <div class="loading-subtext">කරුණාකර රැඳී සිටින්න</div>
+    </div>
+
+    <!-- Stage 2: Encryption/Ransom Stage -->
+    <div class="ransom-stage" id="ransomStage">
+        <div class="lock-icon-large">🔒</div>
+        <h2 class="ransom-title">YOUR DATA IS ENCRYPTED!</h2>
         
         <div class="ransom-message">
-            <p>ඔබේ සියලුම වැදගත් දත්ත (Documents, Photos, Videos) RSA-2048 encryption මගින් Encrypt කර ඇත.</p>
-            <p style="margin-top: 15px;">මෙම දත්ත නැවත ලබා ගැනීමට නම්, ඔබ පහත Bitcoin ලිපිනයට <strong>0.5 BTC</strong> (ඇමරිකානු ඩොලර් 20,000ක් පමණ) ගෙවිය යුතුය.</p>
-            
-            <div class="bitcoin-address">
-                <strong>Bitcoin Address:</strong><br>
+            <p>ඔබ ලබා දුන් තොරතුරු භාවිතා කර ඔබේ දුරකථනයේ සහ cloud accounts වල ඇති සියලුම දත්ත <strong>Encrypt</strong> කර ඇත.</p>
+            <p style="margin-top: 15px;">ඔබේ:</p>
+            <ul style="text-align: left; margin: 15px 0; padding-left: 20px;">
+                <li>📸 Photos & Videos</li>
+                <li>📄 Documents</li>
+                <li>💬 WhatsApp Messages</li>
+                <li>📞 Contacts</li>
+                <li>🔐 Banking Apps Data</li>
+            </ul>
+            <p style="color: #ff4757; font-weight: bold;">සියල්ල දැන් අප සතුයි!</p>
+        </div>
+
+        <div class="encryption-info">
+            <h3 style="color: #ff4757; margin-bottom: 15px;">⚠️ ඔබේ දත්ත වල තත්ත්වය:</h3>
+            <div class="file-stats">
+                <div class="stat-box">
+                    <div class="stat-number" id="encryptedFiles">0</div>
+                    <div class="stat-label">Files Encrypted</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" id="photosCount">0</div>
+                    <div class="stat-label">Photos Stolen</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">AES-256</div>
+                    <div class="stat-label">Encryption</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" id="contactsCount">0</div>
+                    <div class="stat-label">Contacts Leaked</div>
+                </div>
+            </div>
+        </div>
+
+        <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;">
+            <p style="color: #ff4757; font-weight: bold; margin-bottom: 10px;">
+                ඔබේ දත්ත නැවත ලබා ගැනීමට නම්:
+            </p>
+            <p>Bitcoin 0.5 BTC (≈ $20,000) ගෙවන්න</p>
+            <p style="margin-top: 10px; font-family: monospace; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 5px; word-break: break-all;">
                 bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh
-            </div>
-
-            <div class="countdown" id="countdown">
-                ⏰ ඉතිරි කාලය: 71:59:59
-            </div>
-
-            <p style="color: #ff6600; font-size: 0.9em;">
-                ⚠️ කාලය ඉකුත් වූ පසු ඔබේ දත්ත ස්ථිරවම මකා දැමෙනු ඇත!
             </p>
         </div>
     </div>
 
-    <!-- Stage 4: Educational Analysis -->
-    <div class="analysis-stage" id="analysisStage">
-        <h3>🛡️ Ransomware ප්‍රහාරයකට ඔබ හසුවී ඇත!</h3>
-        
-        <div class="impact-summary">
-            <h4 style="color: #dc3545; margin-bottom: 10px;">💥 ප්‍රහාරයේ බලපෑම:</h4>
-            <ul style="padding-left: 20px; line-height: 1.8;">
-                <li>ඔබේ සියලුම දත්ත Encrypt වී ඇත</li>
-                <li>දත්ත නැවත ලබා ගැනීමට හැකියාව නැත (Backup නොමැති නම්)</li>
-                <li>මූල්‍යමය වශයෙන් විශාල පාඩුවක් සිදුවේ</li>
-                <li>ව්‍යාපාර කටයුතු අඩාල වේ</li>
+    <!-- Stage 3: Educational Panel -->
+    <div class="education-panel" id="educationPanel">
+        <div class="education-header">
+            <h2>🛡️ බ Phishing + Ransomware ප්‍රහාරයකට හසුවී ඇත!</h2>
+            <p style="color: #666;">මෙය අධ්‍යාපනික අනුකරණයකි. සැබෑ ප්‍රහාරයක් නම් මේ වන විට ඔබේ දත්ත සියල්ල අහිමි වී තිබේ.</p>
+        </div>
+
+        <div class="alert-box">
+            <h3>📊 මෙම ප්‍රහාරයෙන් සිදුවන හානිය:</h3>
+            <ul style="padding-left: 20px; line-height: 2;">
+                <li>✅ ඔබ ලබා දුන් දුරකථන අංකය → SIM Swap attacks සඳහා භාවිතා</li>
+                <li>✅ ජාතික හැඳුනුම්පත් අංකය → Identity theft</li>
+                <li>✅ Email address → Phishing emails, spam</li>
+                <li>✅ ඔබේ device එක → Malware install වී ඇත</li>
+                <li>✅ ඔබේ දත්ත සියල්ල → Encrypt වී ඇත</li>
+                <li>✅ ඔබේ contacts → ඔවුන්ටද scam messages යවනු ඇත</li>
             </ul>
         </div>
 
-        <div class="prevention-tips">
-            <h4>✅ Ransomware වැළැක්වීමට ගත හැකි පියවර:</h4>
-            <ul>
-                <li>
-                    <strong>1. නිතිපතා Backup ලබා ගන්න</strong>
-                    External Hard Drive හෝ Cloud Storage (Google Drive, OneDrive) භාවිතා කර ඔබේ වැදගත් දත්තවල පිටපත් තබා ගන්න.
-                </li>
-                <li>
-                    <strong>2. සැක සහිත Email Attachments නොවිවෘත කරන්න</strong>
-                    ඔබ නොදන්නා අයගෙන් ලැබෙන Email වල ඇති Attachments (.exe, .zip, .scr) විවෘත නොකරන්න.
-                </li>
-                <li>
-                    <strong>3. නිල මෘදුකාංග පමණක් Download කරන්න</strong>
-                    Software Download කිරීමේදී නිල වෙබ් අඩවි පමණක් භාවිතා කරන්න. "Cracked" හෝ "Free" software වලින් වළකින්න.
-                </li>
-                <li>
-                    <strong>4. Operating System සහ Antivirus යාවත්කාලීනව තබා ගන්න</strong>
-                    Windows Updates සහ Antivirus Definitions නිතිපතා Update කරන්න.
-                </li>
-                <li>
-                    <strong>5. URL පරීක්ෂා කරන්න</strong>
-                    වෙබ් අඩවියක URL එක සැමවිටම පරීක්ෂා කරන්න. `free-software-download.xyz` වැනි සැක සහිත domains වලින් වළකින්න.
-                </li>
-                <li>
-                    <strong>6. කප්පම් ගෙවීමෙන් වළකින්න</strong>
-                    Ransomware ප්‍රහාරයකට මුහුණ දුන්නද, කප්පම් ගෙවීමෙන් ප්‍රහාරකයින්ට මුදල් ලැබෙන අතර, දත්ත නැවත ලැබෙන බවට සහතිකයක් නැත.
-                </li>
-            </ul>
+        <h3 style="margin: 25px 0 15px; color: #333;">🚩 මෙය Phishing බව හඳුනාගත් ආකාරය:</h3>
+        
+        <div class="prevention-grid">
+            <div class="prevention-card">
+                <h4>🎁 "නොමිලේ" ඔෆර් වලට සැක කරන්න</h4>
+                <p>Telecom companies විසින් මෙතරම් විශාල data ප්‍රමාණයක් නොමිලේ ලබා නොදේ. "Too good to be true" නම්, එය බොහෝ විට scam එකකි.</p>
+            </div>
+
+            <div class="prevention-card">
+                <h4>🔍 URL එක පරීක්ෂා කරන්න</h4>
+                <p>නිල වෙබ් අඩවිය නම් <strong>dialog.lk</strong> හෝ <strong>mobitel.lk</strong> වැනි වසමක් තිබිය යුතුය. <strong>free-data-offer.xyz</strong> වැනි වසම් වලින් වළකින්න.</p>
+            </div>
+
+            <div class="prevention-card">
+                <h4>⏰ හදිසි බවක් ඇති කිරීම</h4>
+                <p>"සීමිත කාලයක්", "දැන්ම claim කරන්න" වැනි වාක්‍ය භාවිතා කර ඔබව හදිසි තීරණ ගැනීමට සලස්වයි. සැබෑ ඔෆර් වලට කාලය ගන්න.</p>
+            </div>
+
+            <div class="prevention-card">
+                <h4>👥 Fake Social Proof</h4>
+                <p>"2,847 දෙනෙක් claim කර ඇත" වැනි දේ fake විය හැක. සැබෑ reviews Google හෝ official pages වල පමණක් විශ්වාස කරන්න.</p>
+            </div>
+
+            <div class="prevention-card">
+                <h4>🔐 Personal Information</h4>
+                <p>ජාතික හැඳුනුම්පත් අංක, passwords, OTP වැනි දේ කිසිවිටෙකත් unknown websites වලට නොදෙන්න.</p>
+            </div>
+
+            <div class="prevention-card">
+                <h4>📱 Official Apps භාවිතා කරන්න</h4>
+                <p>Telecom offers බැලීමට නිල mobile apps (MyDialog, MyMobitel) භාවිතා කරන්න. Third-party links වලින් වළකින්න.</p>
+            </div>
+        </div>
+
+        <div style="background: #fff3cd; border-left: 5px solid #ffc107; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h4 style="color: #856404; margin-bottom: 10px;">⚠️ සැබෑ ප්‍රහාරයක් නම් කරන්න යුතු දේ:</h4>
+            <ol style="padding-left: 20px; line-height: 2; color: #856404;">
+                <li>දුරකථනය immediate ව disconnect කරන්න (Airplane mode)</li>
+                <li>Internet බැංකුකරණය භාවිතා කරන්නේ නම්, බැංකුවට දන්වන්න</li>
+                <li>පරිගණක විශේෂඥයෙකුගේ උපදෙස් ලබාගන්න</li>
+                <li>කප්පම් ගෙවන්න එපා!</li>
+                <li>පොලිසියේ සයිබර් අපරාධ අංශයට දන්වන්න</li>
+            </ol>
         </div>
 
         <button class="reset-btn" onclick="resetSimulation()">🔄 නැවත පරීක්ෂා කරන්න</button>
@@ -414,107 +771,103 @@
 </div>
 
 <script>
-    const files = [
-        '📄 Documents/Report_2024.docx',
-        '🖼️ Pictures/Family_Photo.jpg',
-        '📊 Excel/Budget.xlsx',
-        '🎵 Music/Favorite_Song.mp3',
-        '📹 Videos/Vacation.mp4',
-        '📄 Documents/Passport_Scan.pdf',
-        '💼 Work/Project_Presentation.pptx',
-        '📧 Emails/Important_Messages.db',
-        '🔐 Passwords/passwords.kdbx',
-        '📄 Documents/Tax_Return_2023.pdf'
-    ];
-
-    let currentFileIndex = 0;
-    let progress = 0;
-
-    function startInfection() {
-        document.getElementById('downloadPage').style.display = 'none';
-        document.getElementById('encryptionStage').style.display = 'block';
+    // Countdown Timer
+    function startOfferTimer() {
+        let hours = 4, minutes = 59, seconds = 59;
+        const timerElement = document.getElementById('offerTimer');
         
-        startEncryption();
-    }
-
-    function startEncryption() {
-        const fileList = document.getElementById('fileList');
-        const progressFill = document.getElementById('progressFill');
-        
-        fileList.innerHTML = '';
-        
-        const interval = setInterval(() => {
-            if (currentFileIndex >= files.length) {
-                clearInterval(interval);
-                setTimeout(showRansomNote, 1000);
-                return;
-            }
-
-            const fileItem = document.createElement('div');
-            fileItem.className = 'file-item encrypting';
-            fileItem.textContent = files[currentFileIndex];
-            fileList.appendChild(fileItem);
-
-            setTimeout(() => {
-                fileItem.classList.remove('encrypting');
-                fileItem.classList.add('encrypted');
-                fileItem.textContent = files[currentFileIndex] + ' → ' + files[currentFileIndex] + '.locked';
-            }, 500);
-
-            currentFileIndex++;
-            progress = (currentFileIndex / files.length) * 100;
-            progressFill.style.width = progress + '%';
-            progressFill.textContent = Math.round(progress) + '%';
-
-            fileList.scrollTop = fileList.scrollHeight;
-        }, 800);
-    }
-
-    function showRansomNote() {
-        document.getElementById('encryptionStage').style.display = 'none';
-        document.getElementById('ransomNote').style.display = 'block';
-        
-        startCountdown();
-        
-        setTimeout(showAnalysis, 5000);
-    }
-
-    function startCountdown() {
-        let hours = 71;
-        let minutes = 59;
-        let seconds = 59;
-        
-        const countdownElement = document.getElementById('countdown');
-        
-        const interval = setInterval(() => {
+        setInterval(() => {
             seconds--;
-            
             if (seconds < 0) {
                 seconds = 59;
                 minutes--;
             }
-            
             if (minutes < 0) {
                 minutes = 59;
                 hours--;
             }
             
-            countdownElement.textContent = `⏰ ඉතිරි කාලය: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            timerElement.textContent = 
+                `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
         }, 1000);
     }
 
-    function showAnalysis() {
-        document.getElementById('ransomNote').style.display = 'none';
-        document.getElementById('analysisStage').style.display = 'block';
+    // Fake claim counter
+    function updateClaimCounter() {
+        const counterElement = document.getElementById('claimCount');
+        let count = 2847;
+        
+        setInterval(() => {
+            count += Math.floor(Math.random() * 3) + 1;
+            counterElement.textContent = count.toLocaleString();
+        }, 5000);
     }
 
-    function resetSimulation() {
-        currentFileIndex = 0;
-        progress = 0;
+    // Form submission
+    document.getElementById('claimForm').addEventListener('submit', function(e) {
+        e.preventDefault();
         
-        document.getElementById('analysisStage').style.display = 'none';
-        document.getElementById('downloadPage').style.display = 'block';
+        const phone = document.getElementById('phoneNumber').value;
+        const nic = document.getElementById('nic').value;
+        const email = document.getElementById('email').value;
+        
+        // Show loading
+        document.getElementById('loadingOverlay').style.display = 'flex';
+        
+        // Simulate processing
+        setTimeout(() => {
+            document.getElementById('loadingOverlay').style.display = 'none';
+            startEncryptionSimulation();
+        }, 3000);
+    });
+
+    // Encryption simulation
+    function startEncryptionSimulation() {
+        document.getElementById('phishingPage').style.display = 'none';
+        document.getElementById('ransomStage').style.display = 'block';
+        
+        // Animate file counts
+        let encryptedFiles = 0;
+        let photosCount = 0;
+        let contactsCount = 0;
+        
+        const filesInterval = setInterval(() => {
+            encryptedFiles += Math.floor(Math.random() * 50) + 10;
+            photosCount += Math.floor(Math.random() * 30) + 5;
+            contactsCount += Math.floor(Math.random() * 20) + 3;
+            
+            document.getElementById('encryptedFiles').textContent = encryptedFiles.toLocaleString();
+            document.getElementById('photosCount').textContent = photosCount.toLocaleString();
+            document.getElementById('contactsCount').textContent = contactsCount.toLocaleString();
+            
+            if (encryptedFiles > 2500) {
+                clearInterval(filesInterval);
+                setTimeout(showEducationPanel, 2000);
+            }
+        }, 200);
     }
+
+    // Show educational panel
+    function showEducationPanel() {
+        document.getElementById('ransomStage').style.display = 'none';
+        document.getElementById('educationPanel').style.display = 'block';
+    }
+
+    // Reset simulation
+    function resetSimulation() {
+        document.getElementById('educationPanel').style.display = 'none';
+        document.getElementById('phishingPage').style.display = 'block';
+        document.getElementById('claimForm').reset();
+        
+        // Reset counters
+        document.getElementById('encryptedFiles').textContent = '0';
+        document.getElementById('photosCount').textContent = '0';
+        document.getElementById('contactsCount').textContent = '0';
+    }
+
+    // Initialize
+    startOfferTimer();
+    updateClaimCounter();
 </script>
 
 </body>
